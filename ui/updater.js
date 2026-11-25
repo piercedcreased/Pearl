@@ -46,6 +46,13 @@
     }, 1100));
   }
 
+  async function noReleaseYet() {
+    try {
+      const r = await fetch('https://api.github.com/repos/piercedcreased/Pearl/releases/latest', { cache: 'no-store' });
+      return r.status === 404;
+    } catch { return false; }  // couldn't reach GitHub at all: really offline
+  }
+
   async function check({ silent }) {
     if (['checking', 'downloading', 'installing'].includes(state.status)) return;
     set({ status: 'checking', error: '' });
@@ -58,6 +65,12 @@
       if (silent && prefs.skipped !== update.version) openBanner();
     } catch (e) {
       console.warn('Update check failed:', e);
+      // The updater gives the same error for "offline" and "no release published yet".
+      // Ask GitHub directly: if it answers 404, there's simply nothing out yet, which counts as up to date.
+      if (REAL && await noReleaseYet()) {
+        prefs.lastChecked = Date.now(); save();
+        return set({ status: 'uptodate', update: null });
+      }
       // A failed background check stays quiet. A check you asked for says what happened.
       set({ status: silent ? (prefs.lastChecked ? 'uptodate' : 'idle') : 'error', error: String(e) });
     }

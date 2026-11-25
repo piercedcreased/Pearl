@@ -12,7 +12,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
+tauri = { version = "2", features = ["tray-icon"] }
 tauri-plugin-process = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -21,6 +21,12 @@ discord-rich-presence = "1.1.0"
 # The updater only exists on desktop. Android updates go through the store/APK.
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-updater = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-autostart = "2"
+
+# A tiny screen snapshot behind the lock screen, blurred in the page (popups.rs)
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_Graphics_Gdi", "Win32_Foundation"] }
 
 [profile.release]
 codegen-units = 1

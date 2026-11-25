@@ -1,8 +1,14 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "What the Pearl UI is allowed to call",
-  "windows": ["main"],
+  "description": "What the Pearl UI is allowed to call (main window, tray widget and the reminder pop-ups)",
+  "windows": [
+    "main",
+    "tray",
+    "warn-*",
+    "lock-*",
+    "pop-*"
+  ],
   "permissions": [
     "core:default",
     "updater:default",

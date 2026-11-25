@@ -1,12 +1,12 @@
 /* Settings > Discord status */
 .discord-set{grid-area:discord;padding:20px;align-self:start}
 .discord-set .hint{margin:-4px 0 6px}
-.dc-pill{font-size:13px;font-weight:700;padding:4px 10px;border-radius:var(--r-sm);background:rgba(255,255,255,.8);color:var(--soft)}
+.dc-pill{font-size:13px;font-weight:700;padding:4px 10px;border-radius:var(--r-sm);background:color-mix(in srgb,var(--w) 80%,transparent);color:var(--soft)}
 .discord-set[data-status=live] .dc-pill{background:var(--a3);color:var(--on-a3)}
-.discord-set[data-status=closed] .dc-pill,.discord-set[data-status=error] .dc-pill,.discord-set[data-status=not-set-up] .dc-pill{background:color-mix(in srgb,var(--a4) 22%,#fff);color:var(--a4-ink)}
+.discord-set[data-status=closed] .dc-pill,.discord-set[data-status=error] .dc-pill,.discord-set[data-status=not-set-up] .dc-pill{background:color-mix(in srgb,var(--a4) 22%,var(--w));color:var(--a4-ink)}
 .dc-options{transition:opacity .15s}
 .dc-options.dim{opacity:.45;pointer-events:none}
-.discord-set select{max-width:190px;padding:7px 10px;border-radius:var(--r-md);border:1.5px solid color-mix(in srgb,var(--a1) 18%,#fff);background:#fff;font:inherit;font-size:13px;font-weight:600;color:var(--ink)}
+.discord-set select{max-width:190px;padding:7px 10px;border-radius:var(--r-md);border:1.5px solid color-mix(in srgb,var(--a1) 18%,var(--w));background:var(--w);font:inherit;font-size:13px;font-weight:600;color:var(--ink)}
 .dc-help{font-size:13px;font-weight:600;color:var(--a4-ink);margin:4px 0 0}
 .dc-preview{margin-top:10px;padding:12px 14px;border-radius:var(--r-md);background:#2B2D31;color:#F2F3F5}
 .dc-preview small{display:block;font-size:11px;font-weight:700;color:#B5BAC1;margin-bottom:8px}

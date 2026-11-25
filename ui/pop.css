@@ -1,0 +1,117 @@
+/* Mascot pop-up: the mascot rises out of the bottom-left corner with a big speech bubble.
+   Moods get louder each time a reminder is ignored: calm -> annoyed -> mad -> furious. */
+
+/* overflow clips the mascot at the bottom edge (or the taskbar line), so it looks like it climbs out */
+.pop{position:absolute;left:0;bottom:0;width:680px;height:480px;overflow:hidden;pointer-events:none;display:none}
+.s-pop .pop,.s-nudge .pop{display:block}
+.pop>*{pointer-events:auto}
+
+.pop-mascot{position:absolute;left:18px;bottom:-26px;width:230px;height:230px;
+  filter:drop-shadow(0 16px 24px rgba(30,15,70,.45));animation:pop-up .55s cubic-bezier(.2,1.45,.4,1)}
+.pop.out .pop-mascot{animation:pop-down .35s ease-in forwards}
+@keyframes pop-up{from{transform:translateY(110%)}}
+@keyframes pop-down{to{transform:translateY(115%)}}
+
+.pop-bubble{position:absolute;left:150px;bottom:228px;max-width:420px;min-width:250px;padding:18px 22px 16px;
+  background:var(--w);color:var(--ink);border-radius:var(--r-lg);
+  box-shadow:0 22px 44px -18px rgba(30,15,70,.55),0 0 0 3px color-mix(in srgb,var(--a1) 30%,transparent);
+  transform-origin:12% 100%;animation:pop .4s .18s cubic-bezier(.2,1.5,.4,1) backwards}
+.pop.out .pop-bubble{animation:pop-fade .25s ease-in forwards}
+@keyframes pop-fade{to{opacity:0;transform:scale(.9)}}
+/* the tail points down-left at the mascot's head */
+.pop-bubble::after{content:"";position:absolute;left:26px;bottom:-24px;width:34px;height:28px;background:inherit;
+  clip-path:polygon(0 0,100% 0,8% 100%)}
+.pop-line{font-family:var(--display),var(--body),sans-serif;font-size:27px;font-weight:600;line-height:1.15;letter-spacing:.01em}
+.pop-line em{font-style:normal;color:var(--a1-ink)}
+.pop-actions{display:flex;gap:8px;margin-top:14px}
+.pop-actions:empty{display:none}
+.pop-actions button{padding:10px 16px;font-size:15px;flex:1;white-space:nowrap}
+.pop-count{position:absolute;right:12px;top:-12px;font-size:12px;font-weight:800;padding:3px 9px;border-radius:var(--r-sm);background:var(--a2);color:var(--on-a2)}
+.pop-count:empty{display:none}
+
+/* anger mark that pops on the mascot's head */
+.pop-vein{position:absolute;left:186px;bottom:178px;width:50px;height:50px;opacity:0;transform:scale(.4);transition:.25s cubic-bezier(.2,1.6,.4,1)}
+.pop-vein path{fill:none;stroke:#FF2E4D;stroke-width:7;stroke-linecap:round}
+
+/* annoyed: warmer, a little tilt */
+.pop[data-mood="annoyed"] .pop-bubble{box-shadow:0 22px 44px -18px rgba(30,15,70,.55),0 0 0 3px var(--a4)}
+.pop[data-mood="annoyed"] .pop-line em{color:var(--a4-ink)}
+.pop[data-mood="annoyed"] .pop-mascot{transform:rotate(-4deg)}
+
+/* mad: red bubble, white text, vein, shaking */
+.pop[data-mood="mad"] .pop-bubble,.pop[data-mood="furious"] .pop-bubble{background:#FF3653;color:#fff;
+  box-shadow:0 22px 44px -16px rgba(150,10,40,.65),0 0 0 3px #fff}
+.pop[data-mood="mad"] .pop-line em,.pop[data-mood="furious"] .pop-line em{color:#fff;text-decoration:underline 3px;text-underline-offset:4px}
+.pop[data-mood="mad"] .pop-actions .secondary,.pop[data-mood="furious"] .pop-actions .secondary{background:rgba(255,255,255,.22);color:#fff}
+.pop[data-mood="mad"] .pop-actions .primary,.pop[data-mood="furious"] .pop-actions .primary{background:#fff;color:#C8102E;box-shadow:none}
+.pop[data-mood="mad"] .pop-vein,.pop[data-mood="furious"] .pop-vein{opacity:1;transform:scale(1);animation:vein 1s ease-in-out infinite}
+.pop[data-mood="mad"] .pop-mascot{animation:pop-up .55s cubic-bezier(.2,1.45,.4,1),shake .5s .6s ease-in-out 3}
+@keyframes vein{50%{transform:scale(1.18)}}
+@keyframes shake{20%{transform:translateX(-7px) rotate(-3deg)}40%{transform:translateX(7px) rotate(3deg)}60%{transform:translateX(-5px) rotate(-2deg)}80%{transform:translateX(4px)}}
+
+/* furious: bigger, shakes the whole time, red glow round the screen */
+.pop[data-mood="furious"] .pop-line{font-size:33px;font-weight:700}
+.pop[data-mood="furious"] .pop-mascot{width:270px;height:270px;animation:pop-up .55s cubic-bezier(.2,1.45,.4,1),shake .45s .6s ease-in-out infinite}
+.pop[data-mood="furious"] .pop-bubble{bottom:262px;left:178px}
+.pop[data-mood="furious"] .pop-vein{left:214px;bottom:196px}
+.pop-glow{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .6s;
+  box-shadow:inset 0 0 120px 10px rgba(255,40,70,.55)}
+.desk:has(.pop[data-mood="furious"]:not(.out)) .pop-glow{opacity:1;animation:glow 1.6s ease-in-out infinite}
+@keyframes glow{50%{opacity:.55}}
+
+/* happy: bounces */
+.pop[data-mood="happy"] .pop-bubble{background:var(--a3);color:var(--on-a3);box-shadow:0 22px 44px -18px rgba(30,15,70,.55),0 0 0 3px #fff}
+.pop[data-mood="happy"] .pop-mascot{animation:pop-up .55s cubic-bezier(.2,1.45,.4,1),hop .5s .55s ease-in-out 3}
+@keyframes hop{50%{transform:translateY(-26px)}}
+
+/* demo-only step picker, top left of the fake desktop */
+.pop-demo{position:absolute;left:14px;top:56px;display:flex;gap:6px;flex-wrap:wrap;max-width:600px}
+.pop-demo button{font-size:12px;font-weight:700;padding:5px 10px;border-radius:var(--r-sm);background:rgba(0,0,0,.45);color:#fff}
+.pop-demo button:hover{background:rgba(0,0,0,.65)}
+
+/* ---------- in the app: each pop-up is its own transparent window ---------- */
+html:has(body.win),body.win{background:transparent!important}
+body.win .game{display:none}
+body.win .warn{bottom:26px}
+body.win .veil{background:color-mix(in srgb,var(--bg1) 30%,rgba(20,12,40,.18))}
+
+/* ---------- lockdown (snoozed too much): no buttons, just a countdown ---------- */
+.lock-vein{position:absolute;top:-58px;left:50%;margin-left:30px;width:46px;height:46px;display:none}
+.lock-vein path{fill:none;stroke:#FF2E4D;stroke-width:7;stroke-linecap:round}
+.lock-count{font-family:var(--display),var(--body),sans-serif;font-size:64px;font-weight:700;line-height:1;margin-top:20px;color:#E0213F;font-variant-numeric:tabular-nums}
+.lock-card.hard{box-shadow:0 30px 70px -30px rgba(160,10,40,.7),0 0 0 4px #FF3653}
+.lock-card.hard .lock-time{color:#E0213F;text-transform:uppercase;letter-spacing:.12em}
+.lock-card.hard .lock-vein{display:block;animation:vein 1s ease-in-out infinite}
+.lock-card.hard .lock-mascot{animation:shake .45s ease-in-out infinite}
+.lock-card.hard .lock-tags{margin:6px 0 0}
+
+/* ---------- tray widget ---------- */
+.tray-card{position:absolute;inset:0;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:var(--r-lg);
+  background:var(--w);color:var(--ink);border:1px solid var(--rim);overflow:hidden;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--a1) 18%,transparent)}
+.tray-card::before{content:"";position:absolute;inset:0 0 auto;height:96px;background:linear-gradient(135deg,color-mix(in srgb,var(--a1) 22%,transparent),color-mix(in srgb,var(--a2) 18%,transparent));pointer-events:none}
+.tray-top{position:relative;display:flex;align-items:center;gap:12px}
+.tray-mascot{width:62px;height:62px;flex:none}
+.tray-hi{font-family:var(--display),var(--body),sans-serif;font-size:20px}
+.tray-line{font-size:14px;color:var(--soft)}
+.tray-due{position:relative;display:grid;grid-template-columns:1fr auto;align-items:baseline;padding:12px 14px;border-radius:var(--r-md);background:color-mix(in srgb,var(--a2) 12%,transparent)}
+.tray-due span{font-size:13px;font-weight:600;color:var(--soft)}
+.tray-due strong{font-family:var(--display),var(--body),sans-serif;font-size:24px;grid-row:span 2;align-self:center}
+.tray-due small{font-size:13px;font-weight:700;color:var(--a2-ink)}
+.tray-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tray-stats div{display:flex;flex-direction:column;align-items:center;padding:10px 4px;border-radius:var(--r-md);background:color-mix(in srgb,var(--a1) 9%,transparent)}
+.tray-stats strong{font-family:var(--display),var(--body),sans-serif;font-size:22px}
+.tray-stats span{font-size:12px;color:var(--soft)}
+.tray-next{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:0 2px}
+.tray-next span{color:var(--soft)}
+.tray-actions{display:flex;gap:8px;margin-top:auto}
+.tray-actions button{flex:1;padding:11px 10px;font-size:14px}
+.tray-quit{font-size:12px;font-weight:600;color:var(--soft);align-self:center;padding:2px 8px}
+.tray-quit:hover{color:var(--ink)}
+/* the blurred screen snapshot behind the lock (app only) */
+.veil .backdrop{position:absolute;inset:-60px;width:calc(100% + 120px);height:calc(100% + 120px);filter:blur(22px) saturate(1.25);z-index:0}
+.veil::before{content:"";position:absolute;inset:0;background:color-mix(in srgb,var(--bg1) 34%,rgba(20,12,40,.16));z-index:1}
+.veil .lock-card{z-index:2}
+body.win .veil{background:none}
+.still .pop-demo{display:none}
+body:not(.win) .tray-card{inset:auto 18px 58px auto;width:340px;height:372px;box-shadow:0 24px 50px -20px rgba(20,10,50,.6)}

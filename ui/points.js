@@ -21,6 +21,8 @@
     total.textContent = points.toLocaleString('en-US');
     today.textContent = `+${todayPts} today`;
   }
+  // the mascot pop-up pays out through this when a reminder gets done
+  window.PearlPoints = { roll, add(pts) { points += pts; todayPts += pts; show(); } };
 
   function pop(anchor, text, lucky) {
     const r = anchor.getBoundingClientRect();

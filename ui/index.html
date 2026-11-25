@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="goals.css">
 <link rel="stylesheet" href="discord.css">
 <link rel="stylesheet" href="pages.css">
+<link rel="stylesheet" href="pop.css">
 </head>
 <body class="s-main">
 
@@ -313,6 +314,14 @@
         <div class="pickers" id="pickers"></div>
         <div class="bg-block">
           <div class="set-row">
+            <span><b>Light or dark</b><small>By clock: light at 6 AM, dark at 6 PM</small></span>
+            <div class="seg" id="theme"><button data-theme="light">Light</button><button data-theme="dark">Dark</button><button data-theme="auto">By clock</button></div>
+          </div>
+          <div class="pickers win-pick">
+            <label class="picker"><input type="color" id="win-color"><span><b>Window color</b><small>Cards, lists and pop-ups. Text stays readable.</small></span><span class="hex"></span></label>
+            <button class="ghost small" id="win-auto" type="button">Auto</button>
+          </div>
+          <div class="set-row">
             <span><b>Background</b><small>What sits behind everything</small></span>
             <div class="seg" id="bg-mode"><button data-mode="pearl">Pearl mix</button><button data-mode="gradient">Gradient</button><button data-mode="solid">Solid</button></div>
           </div>
@@ -321,6 +330,12 @@
             <span><b>Glow</b><small>How much your colors tint the pearl mix</small></span>
             <input type="range" id="glow" min="0" max="100">
           </label>
+          <div class="set-row" data-bg-for="pearl"><span><b>Pick the pearl colors</b><small>Off: it follows your four colors</small></span><span class="toggle" id="pearl-own" data-own role="switch" aria-label="Pick the pearl colors"></span></div>
+          <div class="pickers bg-pickers" id="pearl-pickers" hidden>
+            <label class="picker"><input type="color" id="bg-p1"><span><b>Pearl 1</b><small>Top left</small></span><span class="hex"></span></label>
+            <label class="picker"><input type="color" id="bg-p2"><span><b>Pearl 2</b><small>Middle</small></span><span class="hex"></span></label>
+            <label class="picker"><input type="color" id="bg-p3"><span><b>Pearl 3</b><small>Bottom right</small></span><span class="hex"></span></label>
+          </div>
           <div class="pickers bg-pickers" data-bg-for="gradient">
             <label class="picker"><input type="color" id="bg-from"><span><b>Start color</b><small>Where the gradient begins</small></span><span class="hex"></span></label>
             <label class="picker"><input type="color" id="bg-to"><span><b>End color</b><small>Where it ends</small></span><span class="hex"></span></label>
@@ -368,9 +383,12 @@
 
       <section class="card reminders">
         <div class="panel-head"><h2>Reminders</h2></div>
-        <div class="set-row"><span><b>Lock the screen for scheduled tasks</b><small>Every-day tasks and anything with a time</small></span><span class="toggle on"></span></div>
+        <div class="set-row"><span><b>Turn on reminders</b><small>Every-day stuff pops up at its time</small></span><span class="toggle" id="remind-on" data-own role="switch" aria-label="Turn on reminders"></span></div>
+        <div class="set-row"><span><b>Try one now</b><small>The warning, the lock and the mascot</small></span><button class="ghost small" id="remind-test">Try it</button></div>
         <div class="set-row"><span><b>Warning before the lock</b><small>Time to pause a game</small></span><span class="value">15 seconds</span></div>
-        <div class="set-row"><span><b>Ask again after dismissing</b><small>Corner popups until you answer</small></span><span class="value">Every 5 min</span></div>
+        <div class="set-row"><span><b>After you dismiss it</b><small>The mascot asks every 5 min until it's done</small></span><span class="value">Every 5 min</span></div>
+        <div class="set-row"><span><b>Snooze too much</b><small>After 3 snoozes, any snooze can lock your screen for 1 to 2 min</small></span><span class="value">Always on</span></div>
+        <div class="set-row"><span><b>Start with Windows</b><small>Pearl waits in the tray</small></span><span class="toggle" id="autostart" data-own role="switch" aria-label="Start with Windows"></span></div>
       </section>
 
       <section class="card discord-set" data-status="off">
@@ -454,14 +472,6 @@
       <button class="dismiss">Dismiss</button>
     </div>
   </div>
-  <div class="nudge" role="dialog" aria-label="Reminder">
-    <div class="mascot nudge-mascot"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
-    <div class="nudge-body">
-      <strong>Still doing Laundry?</strong>
-      <span>You dismissed it 5 min ago. I'll keep asking.</span>
-      <div class="nudge-actions"><button class="primary">Doing it now</button><button class="secondary">Ask in 5 min</button></div>
-    </div>
-  </div>
 </section>
 
 <!-- ================= UPDATE BANNER ================= -->
@@ -485,5 +495,8 @@
 <script src="daily.js"></script>
 <script src="points.js"></script>
 <script src="discord.js"></script>
+<script src="pop.js"></script>
+<script src="screens.js"></script>
+<script src="flow.js"></script>
 </body>
 </html>

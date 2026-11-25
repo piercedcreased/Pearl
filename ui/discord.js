@@ -3,6 +3,7 @@
 // name/progress are shared only if the user switches them on in Settings > Discord status.
 
 (() => {
+  if (new URLSearchParams(location.search).has('win')) return; // only the main window talks to Discord
   const T = window.__TAURI__;
   const REAL = !!(T && T.core);
   const KEY = 'pearl.discord';

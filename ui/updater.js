@@ -5,6 +5,7 @@
 // ?update=available (default) | none | error
 
 (() => {
+  if (new URLSearchParams(location.search).has('win')) return; // not in the reminder pop-up windows
   const T = window.__TAURI__;
   const REAL = !!(T && T.updater);
   const q = new URLSearchParams(location.search);

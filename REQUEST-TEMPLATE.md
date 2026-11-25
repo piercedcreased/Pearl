@@ -1,64 +1,24 @@
-# Pearl request template
+# pearl request template
 
-Copy everything inside the box, fill in what you need, and delete sections you don't use.
-One line per item is enough. Add more lines with another `-`.
-
-```
-PEARL REQUEST
-
-== LOOK & FEEL ==
-(how things look: colors, sizes, corners, spacing, animations)
-- WHERE:            | CHANGE:            | FEEL I WANT:
-
-== SETTINGS ==
-(new options people can change)
-- SETTING:          | OPTIONS:           | DEFAULT:
-
-== NEW FEATURES ==
-(things the app should be able to do)
-- FEATURE:          | HOW IT WORKS:      | MUST NOT:
-
-== CHANGES TO EXISTING STUFF ==
-- WHAT:             | NOW IT:            | SHOULD:
-
-== BUGS ==
-- WHAT I DID:       | WHAT HAPPENED:     | WHAT I EXPECTED:
-
-== THOUGHTS / NOT SURE YET ==
-(ideas to talk through before building; I'll give you options)
--
-
-== PICKS / ANSWERS ==
-(answers to questions I asked you, like font numbers)
--
-
-== DO FIRST ==
-(the 1-3 things that matter most this round)
-1.
-```
-
-## Example
+copy this, fill in whatever, skip the parts you dont need
 
 ```
-PEARL REQUEST
+pearl stuff
 
-== LOOK & FEEL ==
-- WHERE: all menus and cards | CHANGE: less rounded corners | FEEL I WANT: barely rounded but still noticeable
+change how it looks:
+- 
 
-== SETTINGS ==
-- SETTING: background | OPTIONS: pearl mix, gradient, solid color | DEFAULT: pearl mix
+add this:
+- 
 
-== NEW FEATURES ==
-- FEATURE: Discord status | HOW IT WORKS: shows Pearl on my profile | MUST NOT: show goals unless I pick one to show
+fix this:
+- 
 
-== THOUGHTS / NOT SURE YET ==
-- points for daily tasks: maybe random unless there's a smart way to weigh them
+dont do this:
+- 
 
-== DO FIRST ==
-1. Discord status
+not sure yet:
+- 
 ```
 
-Tips:
-- "MUST NOT" is the most useful column. It tells me what to protect.
-- If you don't know something, write `?` and I'll suggest options.
-- Screenshots help a lot for look and feel. Paste one and write "this part".
+one line per thing is fine. a screenshot with "this part" works too

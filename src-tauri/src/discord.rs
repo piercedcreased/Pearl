@@ -8,9 +8,9 @@ use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 use serde::Deserialize;
 use std::sync::Mutex;
 
-/// Application ID from https://discord.com/developers/applications (the app's name is what
-/// Discord shows after "Playing"). Leave empty until it exists; `PEARL_DISCORD_APP_ID` overrides it.
-const APP_ID: &str = "";
+/// Pearl's Application ID from https://discord.com/developers/applications (the app's name is
+/// what Discord shows after "Playing"). `PEARL_DISCORD_APP_ID` overrides it.
+const APP_ID: &str = "1575110259775770755";
 const ICON_URL: &str = "https://raw.githubusercontent.com/piercedcreased/Pearl/main/src-tauri/icons/128x128@2x.png";
 
 #[derive(Default)]

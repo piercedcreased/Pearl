@@ -58,6 +58,9 @@ The working prototype is `ui/` (index.html, pearl.css, app.js). Run the `pearl-u
 - **Feed:** `https://github.com/piercedcreased/Pearl/releases/latest/download/latest.json`. If the repo has a different name, change it in `src-tauri/tauri.conf.json`.
 - **Signing:** the private key is at `C:\Users\coastlineshore\.tauri\pearl.key`. It is NOT in the repo and has no password. The public key is in tauri.conf.json. If the key is lost, installed copies can never update again, so back it up. It must be added as the GitHub secret `TAURI_SIGNING_PRIVATE_KEY`.
 - **Releasing:** run `npm run release -- 0.2.0 "note one" "note two"`. That bumps the version, writes `release-notes.md`, commits, tags and pushes. `.github/workflows/release.yml` then builds on windows-latest, signs, and publishes the release with `latest.json`.
+- **Testing updates locally:** setting the env var `PEARL_UPDATE_FEED=http://127.0.0.1:PORT/latest.json` points the app at a local feed. Plain http is allowed only for localhost, and the update must still be signed with Pearl's key. Verified 2026-11-25: an installed 0.1.0 found 0.1.1, downloaded it, installed it and reopened as 0.1.1.
+- `src-tauri/build.rs` reruns when package.json changes. Without that, a version bump alone kept the old version inside the exe.
+- Local builds need `$env:PATH` to include `%USERPROFILE%\.cargo\bin` (Rust was installed by winget 2026-11-25), plus `TAURI_SIGNING_PRIVATE_KEY` set to the key file's contents.
 - Android: the Tauri updater is desktop only. Android updates will go through the Play Store or an APK.
 
 ## Status

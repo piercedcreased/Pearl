@@ -118,7 +118,7 @@
         available:   [`Version ${u?.version} is ready`, `You have ${v}`],
         downloading: [`Downloading ${u?.version}`, `${pct}% done`],
         installing:  ['Installing', 'Pearl will close and reopen by itself'],
-        error:       ["Couldn't check for updates", 'Check your internet connection and try again'],
+        error:       ["Couldn't reach the update server", 'Check your internet connection, then try again'],
       }[state.status];
       card.querySelector('[data-ustatus]').textContent = title;
       card.querySelector('[data-usub]').textContent = sub;

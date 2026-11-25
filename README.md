@@ -28,7 +28,11 @@ so pearl doesnt let you swipe it away. when something is due it takes over your 
 ## it actually stops you
 
 <p align="center">
-  <img src="docs/lock-flow.png" alt="heads up, then the lock screen, then the corner nudge" width="880">
+  <img src="docs/desktop-lock.jpg" alt="the lock screen blurring a desktop with the task in the middle" width="880">
+</p>
+
+<p align="center">
+  <img src="docs/desktop-warn-nudge.png" alt="the 15 second heads up, and the corner nudge after dismissing" width="880">
 </p>
 
 1. **heads up.** 15 seconds before, a little bar shows up at the bottom so you can pause your game

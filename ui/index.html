@@ -76,9 +76,9 @@
       <ul class="tasks">
         <li class="task c3 done"><button class="check" aria-label="Done"></button><span class="name">Take meds</span><span class="when">9:00 AM</span><span class="pts">+10</span></li>
         <li class="task c1 done"><button class="check" aria-label="Done"></button><span class="name">Reply to landlord about the sink</span><span class="when">1:00 PM</span><span class="pts">+15</span></li>
-        <li class="task c2"><button class="check" aria-label="Mark done"></button><span class="name">Pick up prescription</span><span class="when">3:30 PM</span><span class="pts">+20</span></li>
-        <li class="task c4"><button class="check" aria-label="Mark done"></button><span class="name">30 minute walk <em class="goal-tag">Walk 20 times</em></span><span class="when">Any time</span><span class="pts">+15</span></li>
-        <li class="task c1"><button class="check" aria-label="Mark done"></button><span class="name">Email the dentist</span><span class="when">Any time</span><span class="pts">+10</span></li>
+        <li class="task c2"><button class="check" aria-label="Mark done"></button><span class="name">Pick up prescription</span><span class="when">3:30 PM</span><span class="pts mystery">?</span></li>
+        <li class="task c4"><button class="check" aria-label="Mark done"></button><span class="name">30 minute walk <em class="goal-tag">Walk 20 times</em></span><span class="when">Any time</span><span class="pts mystery">?</span></li>
+        <li class="task c1"><button class="check" aria-label="Mark done"></button><span class="name">Email the dentist</span><span class="when">Any time</span><span class="pts mystery">?</span></li>
       </ul>
       <form class="add" onsubmit="return false">
         <span class="plus">+</span>
@@ -379,7 +379,7 @@
       <div class="mascot lock-mascot"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
       <p class="lock-time">6:00 PM</p>
       <h2>Time for Laundry</h2>
-      <p class="lock-sub">Get it going and grab 20 points.</p>
+      <p class="lock-sub">Get it going and roll for points.</p>
       <div class="lock-tags"><span class="c2">4 day streak</span><span class="c1">About 10 min</span></div>
       <div class="lock-actions"><button class="primary">Start Laundry</button><button class="secondary">Snooze 10 min</button></div>
       <button class="dismiss">Dismiss</button>
@@ -412,6 +412,7 @@
 <script src="app.js"></script>
 <script src="updater.js"></script>
 <script src="goals.js"></script>
+<script src="points.js"></script>
 <script src="discord.js"></script>
 </body>
 </html>

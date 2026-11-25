@@ -344,3 +344,10 @@ h2{font-size:20px;font-weight:700}
 .set-col .card{grid-area:auto!important}
 .font-opt{padding:12px 4px 10px}
 .set-col .card{align-self:stretch!important}
+
+/* ---------- random points ---------- */
+.task .pts.mystery{display:inline-grid;place-items:center;min-width:26px;height:22px;padding:0 6px;border-radius:var(--r-sm);background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--ci);text-align:center}
+.task .pts.lucky{color:var(--a4-ink)}
+.pts-pop{position:fixed;z-index:30;transform:translate(-50%,-100%);font-family:var(--display),sans-serif;font-weight:700;font-size:20px;color:var(--a1-ink);pointer-events:none;animation:ptspop 1.3s ease-out forwards;text-shadow:0 2px 0 #fff}
+.pts-pop.lucky{color:var(--a4-ink);font-size:24px}
+@keyframes ptspop{0%{opacity:0;transform:translate(-50%,-60%) scale(.7)}15%{opacity:1;transform:translate(-50%,-110%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-260%) scale(1)}}

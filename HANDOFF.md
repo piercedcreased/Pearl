@@ -84,7 +84,7 @@ Pearl is the owner's to-do and reminder app that pushes them to actually do thin
   - A 12-hour picker (hour, 5-minute steps, AM/PM) saved in localStorage `pearl.deadline`.
   - The countdown uses the real clock. The ring empties from 8:00 AM to the done-by time and shows "Time's up" after it.
   - `?now=13:58` fakes the clock for screenshots.
-- **Popup demo on the owner's wallpaper:** `?screen=warn|lock|nudge` uses `ui/demo/wallpaper.jpg` when it exists, and falls back to the drawn game scene. `ui/demo/` is gitignored, because the wallpaper is someone else's artwork plus the owner's desktop, so keep it out of the public repo. The readme uses the drawn scene.
+- **Popup demo on the owner's wallpaper:** `?screen=warn|lock|nudge` uses `ui/demo/wallpaper.jpg` when it exists, and falls back to the drawn game scene. `ui/demo/` (the raw wallpaper) is gitignored. The owner asked for the readme's reminder images to be their desktop with the popups over it: `docs/desktop-lock.jpg` and `docs/desktop-warn-nudge.png`.
 
 ## Next up (in rough order)
 1. **Real data:** tasks, routines, goals and points saved to disk (JSON in the app data dir via a Rust command, or tauri-plugin-store). Replace the sample HTML with rendering from data. Make adding, editing and deleting work.

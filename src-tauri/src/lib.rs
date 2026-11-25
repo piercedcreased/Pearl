@@ -1,3 +1,5 @@
+mod discord;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     #[allow(unused_mut)]
@@ -19,6 +21,12 @@ pub fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
+        .manage(discord::Discord::default())
+        .invoke_handler(tauri::generate_handler![
+            discord::discord_set,
+            discord::discord_clear,
+            discord::discord_ready
+        ])
         .setup(|app| {
             #[cfg(desktop)]
             app.handle()

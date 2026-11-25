@@ -1,0 +1,32 @@
+/* Percent and steps goals, and the goal type picker in the New goal form. */
+
+.pct{position:relative;display:block;height:30px}
+.pct input{-webkit-appearance:none;appearance:none;width:100%;height:30px;margin:0;border-radius:var(--r-md);cursor:pointer;
+  background:linear-gradient(90deg,var(--c) 0 var(--v,40%),color-mix(in srgb,var(--c) 15%,#fff) var(--v,40%) 100%)}
+.pct input::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:38px;border-radius:3px;background:#fff;box-shadow:0 0 0 2.5px var(--c),0 4px 10px -4px rgba(0,0,0,.4)}
+.pct input::-moz-range-thumb{width:10px;height:38px;border-radius:3px;background:#fff;border:2.5px solid var(--c)}
+.pct output{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:800;color:var(--on);pointer-events:none}
+.goal.complete .g-reward{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--c)}
+
+.steps{display:flex;flex-direction:column;gap:4px}
+.steps li{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:var(--r-md);background:rgba(255,255,255,.7);font-size:14px;font-weight:600;cursor:pointer}
+.steps li:hover{background:#fff}
+.step-check{width:20px;height:20px;border-radius:5px;border:2.5px solid var(--c);flex:none;display:grid;place-items:center}
+.steps li.done .step-check{background:var(--c)}
+.steps li.done .step-check::after{content:"";width:8px;height:5px;border:solid var(--on);border-width:0 0 2.5px 2.5px;transform:translateY(-1px) rotate(-45deg)}
+.steps li.done span{text-decoration:line-through;opacity:.5}
+.step-add{display:flex;align-items:center;gap:8px}
+.step-add .plus{width:22px;height:22px;border-radius:5px;display:grid;place-items:center;font-weight:800;background:var(--c);color:var(--on);flex:none}
+.step-add input{flex:1;padding:8px 10px;border-radius:var(--r-md);background:rgba(255,255,255,.7);font-size:14px;outline:none}
+
+.kinds{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.kind{display:flex;flex-direction:column;gap:2px;padding:9px 8px;border-radius:var(--r-md);background:#fff;border:1.5px solid color-mix(in srgb,var(--a1) 16%,#fff);text-align:left}
+.kind b{font-size:14px}
+.kind small{font-size:11.5px;color:var(--soft);line-height:1.25}
+.kind.on{border-color:var(--a1);box-shadow:0 0 0 1.5px var(--a1);background:color-mix(in srgb,var(--a1) 6%,#fff)}
+.step-draft{display:flex;flex-direction:column;gap:6px;padding-left:20px;font-size:14px;color:var(--soft);font-weight:700}
+.field-hint{font-size:12px;color:var(--soft)}
+.sheet{width:600px}
+
+.goal-grid{align-items:start}
+.step-draft input{width:100%}

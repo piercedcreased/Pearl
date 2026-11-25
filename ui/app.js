@@ -19,9 +19,20 @@ const ROLES = [
   ['Done color', 'Checkmarks, streaks, finished goals'],
   ['Extra color', 'Another color for tasks and goals'],
 ];
+// The five fonts the owner picked (2026-11-25). display = headings, body = everything else.
+const FONTS = {
+  pearl:     { name: 'Pearl',        display: "'Fredoka'",      body: "'Figtree'" },
+  quicksand: { name: 'Quicksand',    display: "'Quicksand'",    body: "'Quicksand'" },
+  fraunces:  { name: 'Fraunces',     display: "'Fraunces'",     body: "'Fraunces'" },
+  patrick:   { name: 'Patrick Hand', display: "'Patrick Hand'", body: "'Patrick Hand'" },
+  lexend:    { name: 'Lexend',       display: "'Lexend'",       body: "'Lexend'" },
+};
 const KEY = 'pearl.look';
-const fresh = () => ({ preset: 'lagoon', colors: [...PRESETS.lagoon.c], glow: 60 });
+const freshBg = () => ({ mode: 'pearl', solid: '#F1EEF8', from: '#CDBEFF', to: '#FFC6DF', angle: 135 });
+const fresh = () => ({ preset: 'lagoon', colors: [...PRESETS.lagoon.c], glow: 60, bg: freshBg(), font: 'pearl' });
 let look = (() => { try { return JSON.parse(localStorage.getItem(KEY)) || fresh(); } catch { return fresh(); } })();
+look.bg = { ...freshBg(), ...(look.bg || {}) };
+if (!FONTS[look.font]) look.font = 'pearl';
 
 const toRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 const toHex = rgb => '#' + rgb.map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
@@ -44,6 +55,22 @@ function applyLook() {
   s.setProperty('--bg3', mix('#ffffff', a2, g * .9));
   s.setProperty('--ink', ink);
   s.setProperty('--soft', mix(a1, '#6E6A85', .78));
+
+  // Page background: the pearl mix (tinted by the accents), a two-color gradient, or one solid color.
+  const bg = look.bg;
+  const page = bg.mode === 'solid' ? bg.solid
+    : bg.mode === 'gradient' ? `linear-gradient(${bg.angle}deg, ${bg.from}, ${bg.to})`
+    : 'linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 48%, var(--bg3) 100%)';
+  s.setProperty('--page-bg', page);
+  // Text sitting right on the background flips to white when the background is dark.
+  const sample = bg.mode === 'solid' ? bg.solid : bg.mode === 'gradient' ? mix(bg.from, bg.to, .5) : '#ffffff';
+  const dark = lum(sample) < .28;
+  s.setProperty('--page-ink', dark ? '#ffffff' : ink);
+  s.setProperty('--page-soft', dark ? 'rgba(255,255,255,.78)' : mix(a1, '#6E6A85', .78));
+  s.setProperty('--glass', dark ? 'rgba(255,255,255,.92)' : 'rgba(255,255,255,.64)');
+  const f = FONTS[look.font];
+  s.setProperty('--display', f.display);
+  s.setProperty('--body', f.body);
   localStorage.setItem(KEY, JSON.stringify(look));
   renderColorSettings();
 }
@@ -62,17 +89,36 @@ function renderColorSettings() {
     inp.closest('.picker').querySelector('.hex').textContent = c.toUpperCase();
   });
   document.getElementById('glow').value = look.glow;
+  const bg = look.bg;
+  document.querySelectorAll('#bg-mode button').forEach(b => b.classList.toggle('on', b.dataset.mode === bg.mode));
+  document.querySelectorAll('[data-bg-for]').forEach(el => el.hidden = !el.dataset.bgFor.split(' ').includes(bg.mode));
+  for (const k of ['solid', 'from', 'to']) {
+    const inp = document.getElementById('bg-' + k);
+    if (document.activeElement !== inp) inp.value = bg[k];
+    inp.closest('.picker').querySelector('.hex').textContent = bg[k].toUpperCase();
+  }
+  document.getElementById('bg-angle').value = bg.angle;
+  document.getElementById('fonts').innerHTML = Object.entries(FONTS).map(([id, f]) =>
+    `<button class="font-opt${look.font === id ? ' on' : ''}" data-font="${id}" style="--fd:${f.display.replace(/"/g, '')};--fb:${f.body.replace(/"/g, '')}"><span class="aa">Aa</span><b>${f.name}</b></button>`).join('');
+  document.getElementById('bg-preview').style.background = getComputedStyle(document.documentElement).getPropertyValue('--page-bg');
 }
 
 document.addEventListener('click', e => {
   const p = e.target.closest('[data-preset]');
   if (p) { look.preset = p.dataset.preset; look.colors = [...PRESETS[p.dataset.preset].c]; applyLook(); }
+  const f = e.target.closest('[data-font]');
+  if (f) { look.font = f.dataset.font; applyLook(); }
 });
 document.getElementById('pickers').addEventListener('input', e => {
   look.colors[e.target.dataset.i] = e.target.value; look.preset = 'custom'; applyLook();
 });
 document.getElementById('glow').addEventListener('input', e => { look.glow = +e.target.value; applyLook(); });
-document.getElementById('reset-colors').addEventListener('click', () => { look = fresh(); applyLook(); });
+document.getElementById('reset-colors').addEventListener('click', () => { look = { ...fresh(), font: look.font }; applyLook(); });
+document.getElementById('bg-mode').addEventListener('click', e => {
+  const b = e.target.closest('[data-mode]'); if (b) { look.bg.mode = b.dataset.mode; applyLook(); }
+});
+for (const k of ['solid', 'from', 'to']) document.getElementById('bg-' + k).addEventListener('input', e => { look.bg[k] = e.target.value; applyLook(); });
+document.getElementById('bg-angle').addEventListener('input', e => { look.bg.angle = +e.target.value; applyLook(); });
 
 /* ---------------- mascot image ---------------- */
 const MKEY = 'pearl.mascot';

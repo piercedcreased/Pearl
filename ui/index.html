@@ -6,6 +6,8 @@
 <title>Pearl</title>
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="pearl.css">
+<link rel="stylesheet" href="goals.css">
+<link rel="stylesheet" href="discord.css">
 </head>
 <body class="s-main">
 
@@ -110,6 +112,33 @@
     </header>
 
     <div class="goal-grid">
+      <article class="goal card c1" data-goal="percent">
+        <div class="g-head">
+          <span class="g-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span>
+          <div><h3>Finish my portfolio site</h3><p data-pct-text>40% there</p></div>
+          <span class="g-reward">+300</span>
+        </div>
+        <label class="pct"><input type="range" min="0" max="100" step="5" value="40" aria-label="How far along"><output>40%</output></label>
+        <div class="g-foot"><span class="g-link">Drag the bar to where you're at</span><button class="ghost small" data-pct-done>Mark done</button></div>
+      </article>
+
+      <article class="goal card c4" data-goal="steps">
+        <div class="g-head">
+          <span class="g-icon"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2"/><circle cx="5" cy="18" r="1.2"/></svg></span>
+          <div><h3>Clean out the garage</h3><p data-steps-text>2 of 5 steps</p></div>
+          <span class="g-reward">+180</span>
+        </div>
+        <div class="bar"><i style="width:40%"></i><span>40%</span></div>
+        <ul class="steps">
+          <li class="done"><button class="step-check" aria-label="Step done"></button><span>Sort the boxes</span></li>
+          <li class="done"><button class="step-check" aria-label="Step done"></button><span>Donate old stuff</span></li>
+          <li><button class="step-check" aria-label="Mark step done"></button><span>Recycle the cardboard</span></li>
+          <li><button class="step-check" aria-label="Mark step done"></button><span>Sweep the floor</span></li>
+          <li><button class="step-check" aria-label="Mark step done"></button><span>Put up the shelves</span></li>
+        </ul>
+        <form class="step-add"><span class="plus">+</span><input placeholder="Add a step"></form>
+      </article>
+
       <article class="goal card c4">
         <div class="g-head">
           <span class="g-icon"><svg viewBox="0 0 24 24"><circle cx="13" cy="4.5" r="2"/><path d="M9 21l2.5-6.5L14 17v4M7 12l3-4 4 1.5 2.5 3M11.5 14.5 13 9"/></svg></span>
@@ -207,51 +236,92 @@
       <p>Make Pearl yours. Changes show up right away.</p>
     </header>
 
-    <section class="card colors">
-      <div class="panel-head"><h2>Colors</h2><button class="ghost small" id="reset-colors">Reset</button></div>
-      <p class="hint">Start from a set, then change any color you like.</p>
-      <div class="presets" id="presets"></div>
-      <div class="pickers" id="pickers"></div>
-      <label class="glow-row">
-        <span><b>Background glow</b><small>How much color tints the background</small></span>
-        <input type="range" id="glow" min="0" max="100">
-      </label>
-    </section>
-
-    <section class="card mascot-set">
-      <div class="panel-head"><h2>Mascot</h2></div>
-      <div class="mascot-pick">
-        <div class="mascot big-preview"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
-        <div>
-          <label class="primary file-btn">Choose image<input type="file" id="mascot-file" accept="image/png,image/webp,image/gif"></label>
-          <button class="ghost small" id="mascot-reset">Use the default</button>
-          <p class="hint">A PNG with a transparent background works best.</p>
+    <div class="set-col">
+      <section class="card colors">
+        <div class="panel-head"><h2>Colors</h2><button class="ghost small" id="reset-colors">Reset</button></div>
+        <p class="hint">Start from a set, then change any color you like.</p>
+        <div class="presets" id="presets"></div>
+        <div class="pickers" id="pickers"></div>
+        <div class="bg-block">
+          <div class="set-row">
+            <span><b>Background</b><small>What sits behind everything</small></span>
+            <div class="seg" id="bg-mode"><button data-mode="pearl">Pearl mix</button><button data-mode="gradient">Gradient</button><button data-mode="solid">Solid</button></div>
+          </div>
+          <div class="bg-preview" id="bg-preview" aria-hidden="true"></div>
+          <label class="glow-row" data-bg-for="pearl">
+            <span><b>Glow</b><small>How much your colors tint the pearl mix</small></span>
+            <input type="range" id="glow" min="0" max="100">
+          </label>
+          <div class="pickers bg-pickers" data-bg-for="gradient">
+            <label class="picker"><input type="color" id="bg-from"><span><b>Start color</b><small>Where the gradient begins</small></span><span class="hex"></span></label>
+            <label class="picker"><input type="color" id="bg-to"><span><b>End color</b><small>Where it ends</small></span><span class="hex"></span></label>
+            <label class="glow-row"><span><b>Direction</b><small>Which way the colors flow</small></span><input type="range" id="bg-angle" min="0" max="360"></label>
+          </div>
+          <div class="pickers bg-pickers" data-bg-for="solid">
+            <label class="picker"><input type="color" id="bg-solid"><span><b>Background color</b><small>One color, no blend</small></span><span class="hex"></span></label>
+          </div>
         </div>
-      </div>
-      <div class="set-row">
-        <span><b>How often it talks</b></span>
-        <div class="seg"><button>Wins only</button><button class="on">Sometimes</button><button>A lot</button></div>
-      </div>
-    </section>
+      </section>
 
-    <section class="card reminders">
-      <div class="panel-head"><h2>Reminders</h2></div>
-      <div class="set-row"><span><b>Lock the screen for scheduled tasks</b><small>Every-day tasks and anything with a time</small></span><span class="toggle on"></span></div>
-      <div class="set-row"><span><b>Warning before the lock</b><small>Time to pause a game</small></span><span class="value">15 seconds</span></div>
-      <div class="set-row"><span><b>Ask again after dismissing</b><small>Corner popups until you answer</small></span><span class="value">Every 5 min</span></div>
-    </section>
+      <section class="card updates" data-status="idle">
+        <div class="panel-head"><h2>Updates</h2><span class="ver-pill">Version <span data-appver>0.1.0</span></span></div>
+        <div class="upd-status">
+          <span class="upd-dot"></span>
+          <span class="upd-text"><b data-ustatus>Check for new versions</b><small data-usub>Not checked yet</small></span>
+          <button class="primary" data-ucheck>Check for updates</button>
+        </div>
+        <div class="ub-progress" hidden><i></i></div>
+        <p class="upd-notes" data-unotes hidden></p>
+        <div class="set-row"><span><b>Check when Pearl starts</b><small>And every few hours while it's open</small></span><span class="toggle on" id="upd-auto" data-own role="switch" aria-label="Check when Pearl starts"></span></div>
+      </section>
+    </div>
+    <div class="set-col">
+      <section class="card mascot-set">
+        <div class="panel-head"><h2>Mascot</h2></div>
+        <div class="mascot-pick">
+          <div class="mascot big-preview"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
+          <div>
+            <label class="primary file-btn">Choose image<input type="file" id="mascot-file" accept="image/png,image/webp,image/gif"></label>
+            <button class="ghost small" id="mascot-reset">Use the default</button>
+            <p class="hint">A PNG with a transparent background works best.</p>
+          </div>
+        </div>
+        <div class="set-row">
+          <span><b>How often it talks</b></span>
+          <div class="seg"><button>Wins only</button><button class="on">Sometimes</button><button>A lot</button></div>
+        </div>
+      </section>
 
-    <section class="card updates" data-status="idle">
-      <div class="panel-head"><h2>Updates</h2><span class="ver-pill">Version <span data-appver>0.1.0</span></span></div>
-      <div class="upd-status">
-        <span class="upd-dot"></span>
-        <span class="upd-text"><b data-ustatus>Check for new versions</b><small data-usub>Not checked yet</small></span>
-        <button class="primary" data-ucheck>Check for updates</button>
-      </div>
-      <div class="ub-progress" hidden><i></i></div>
-      <p class="upd-notes" data-unotes hidden></p>
-      <div class="set-row"><span><b>Check when Pearl starts</b><small>And every few hours while it's open</small></span><span class="toggle on" id="upd-auto" data-own role="switch" aria-label="Check when Pearl starts"></span></div>
-    </section>
+      <section class="card font-set">
+        <div class="panel-head"><h2>Font</h2></div>
+        <div class="fonts" id="fonts"></div>
+      </section>
+
+      <section class="card reminders">
+        <div class="panel-head"><h2>Reminders</h2></div>
+        <div class="set-row"><span><b>Lock the screen for scheduled tasks</b><small>Every-day tasks and anything with a time</small></span><span class="toggle on"></span></div>
+        <div class="set-row"><span><b>Warning before the lock</b><small>Time to pause a game</small></span><span class="value">15 seconds</span></div>
+        <div class="set-row"><span><b>Ask again after dismissing</b><small>Corner popups until you answer</small></span><span class="value">Every 5 min</span></div>
+      </section>
+
+      <section class="card discord-set" data-status="off">
+        <div class="panel-head"><h2>Discord status</h2><span class="dc-pill" data-dc-status>Off</span></div>
+        <p class="hint">Shows that you're using Pearl on your Discord profile. Your tasks and goals stay private unless you pick them below.</p>
+        <div class="set-row"><span><b>Show Pearl on Discord</b></span><span class="toggle" id="dc-on" data-own role="switch" aria-label="Show Pearl on Discord"></span></div>
+        <div class="dc-options">
+          <div class="set-row"><span><b>Show today's progress</b><small>Like "3 of 5 done today", never task names</small></span><span class="toggle" id="dc-today" data-own role="switch" aria-label="Show today's progress"></span></div>
+          <div class="set-row"><span><b>Show a goal</b><small>Its name and how close you are</small></span><select id="dc-goal" aria-label="Goal to show"></select></div>
+        </div>
+        <p class="dc-help" data-dc-help hidden></p>
+        <div class="dc-preview" aria-label="What friends will see">
+          <small>Friends will see</small>
+          <div class="dc-row">
+            <img src="pearl-icon.png" alt="">
+            <div><b>Pearl</b><span data-dc-details>Getting things done</span><span data-dc-state hidden></span><span class="dc-time" data-dc-time>00:00 elapsed</span></div>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 </div>
 
@@ -261,15 +331,30 @@
     <h2>New goal</h2>
     <label class="field"><span>What's the goal?</span><input value="Go to the gym 12 times"></label>
     <div class="field"><span>How do you track it?</span>
-      <div class="seg kind"><button type="button" class="on">Do it a number of times</button><button type="button">Reach an amount</button><button type="button">Keep a streak</button></div>
+      <div class="kinds" id="goal-kinds">
+        <button type="button" class="kind on" data-kind="times"><b>Times</b><small>Do it 12 times</small></button>
+        <button type="button" class="kind" data-kind="amount"><b>Amount</b><small>Save $300</small></button>
+        <button type="button" class="kind" data-kind="streak"><b>Streak</b><small>Every day for a while</small></button>
+        <button type="button" class="kind" data-kind="percent"><b>Percent</b><small>You slide the bar</small></button>
+        <button type="button" class="kind" data-kind="steps"><b>Steps</b><small>A checklist fills the bar</small></button>
+      </div>
     </div>
     <div class="field-row">
-      <label class="field"><span>Target</span><input value="12"></label>
+      <label class="field" data-kind-for="times amount streak"><span data-target-label>Target</span><input value="12"></label>
+      <label class="field" data-kind-for="percent"><span>Starting at</span><input value="0%"></label>
       <label class="field"><span>Done by</span><input value="Dec 31"></label>
     </div>
-    <label class="field"><span>Count it when I finish</span>
+    <label class="field" data-kind-for="times streak"><span>Count it when I finish</span>
       <div class="fake-select">Gym <small>task</small></div>
     </label>
+    <div class="field" data-kind-for="steps"><span>Steps</span>
+      <ol class="step-draft">
+        <li><input value="Sort the boxes"></li>
+        <li><input value="Donate old stuff"></li>
+        <li><input placeholder="Add another step"></li>
+      </ol>
+      <small class="field-hint">Each step you finish fills the bar by the same amount.</small>
+    </div>
     <div class="field-row">
       <div class="field"><span>Color</span><div class="swatches"><i class="c1 on"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i></div></div>
       <label class="field"><span>Bonus points</span><input value="150"></label>
@@ -326,5 +411,7 @@
 
 <script src="app.js"></script>
 <script src="updater.js"></script>
+<script src="goals.js"></script>
+<script src="discord.js"></script>
 </body>
 </html>

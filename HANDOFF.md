@@ -1,0 +1,52 @@
+# Pearl: handoff
+
+Pearl is a to-do and reminder app that pushes you to actually do things. It's Windows first, with Android later and settings synced between the two.
+
+## What the owner asked for (2026-11-25)
+- A to-do list like Microsoft To Do, but simpler to get around.
+- A daily "get it all done by" time, in 12-hour format (e.g. 4:15 PM), with a live countdown.
+- Every-day routines (laundry, dishes...) on a schedule.
+- Points for finishing things. How points work is still open, so decide that later.
+- Colorful and vibrant, but sleek: a poppy, bubbly feel.
+- A mascot (like Duolingo's, but you never have to take care of it). The owner sets their own transparent PNG. It pops up sometimes with random lines, and congratulates you, especially when everything is done.
+- When a scheduled item is due:
+  1. A warning near the bottom of the screen counts down 15 seconds, so you can pause a game.
+  2. Then a full-screen lock appears, softly blurred, with the task on a card. It can be dismissed.
+  3. If you dismiss it, small custom corner popups (NOT Windows notifications) keep asking if you're doing the task until you confirm.
+- Name: Pearl (for now).
+- Must not use Godot. Use a stack that runs on both Windows and Android.
+
+## Stack (recommended, not final until the owner OKs it)
+**Tauri 2** (Rust shell, web UI). It builds Windows and Android from one codebase.
+- Light on RAM/CPU, which matters because the owner games on this PC.
+- Multiple windows are easy: the main window, a transparent always-on-top fullscreen lock window, and small borderless corner windows for nudges.
+- The `window-vibrancy` crate gives real Windows acrylic blur behind the lock screen.
+- The mockup HTML/CSS in `mockups/` can be reused as the real UI.
+- Android later: the lock needs a small native plugin ("display over other apps" permission + a foreground service). Every stack needs that part.
+- Caveat: games in exclusive fullscreen can sit above overlays. Borderless windowed games are fine.
+
+The fallback is Flutter. It's also fine, but multi-window desktop overlays are clumsier there.
+
+## Mockups
+`mockups/index.html?theme=lagoon|night|sticker&screen=main|warn|lock|nudge` (add `&still` to turn off the entrance animations).
+`mockups/overview.html` shows all 12 at once. Screenshots are in `mockups/shots/`.
+To view them, run the `pearl-mockups` config in `C:\claudingprojects\.claude\launch.json` (port 5120).
+- A. Lagoon: iridescent pearl glass, a sidebar, and a countdown ring. Fredoka + Figtree.
+- B. Night Pop: dark grape with candy brights, an icon rail, and a big countdown with a day timeline. Unbounded + Outfit.
+- C. Sticker: sunflower yellow, thick outlines, top tabs, and a big mascot panel. Baloo 2.
+The mascot in the mockups is a placeholder pearl. The real one is the owner's PNG.
+
+## Chosen design: A (Lagoon), with colors you can change (picked 2026-11-25)
+The working prototype is `ui/` (index.html, pearl.css, app.js). Run the `pearl-ui` config in launch.json (port 5121). It becomes the real app's frontend.
+- Pages are chosen by hash: `#today`, `#goals`, `#goals/new` (the New goal form), `#settings`. For the desktop popups, use `?screen=warn|lock|nudge`. `?preset=ocean` etc. forces a color set, and `?still` turns off the entrance animations.
+- **Colors:** the user picks 4 accents (Main, Pop, Done, Extra). There are six presets (Lagoon, Bubblegum, Ocean, Sunset, Mint, Grape) plus a "Background glow" slider. `app.js` works out everything else from the 4 accents: text-safe darker shades (`--aN-ink`), text color on each accent (`--on-aN`), the background tints, ink and soft gray. Light colors like yellow stay readable. Saved in localStorage `pearl.look`. This should become part of the synced settings later.
+- **Mascot:** Settings has "Choose image" (a transparent PNG). It's stored in localStorage `pearl.mascot` and replaces every `.mascot` element.
+- **Goals:** goals are bigger targets that pay bonus points. There are three ways to track them: a number of times (pips), an amount (bar), and a streak (day squares). A weekly target shows M-S boxes. A goal can be linked to a task or routine, so finishing that task counts toward it; the task shows a small goal tag on Today. The right column on Goals shows "Today helps with" and the mascot. A Finished list sits at the bottom.
+- "Every day", "Upcoming" and "Done" in the sidebar don't have their own pages yet.
+
+## Status
+- [x] Mockups for three directions
+- [x] Owner picked A, with colors you can change, plus a Goals page
+- [ ] Scaffold the Tauri 2 app around `ui/` (main window, lock window, corner nudge windows, tray icon, start with Windows)
+- [ ] Real data: tasks, routines, goals, points, saved to disk
+- [ ] Decide how points work (what they buy or unlock)

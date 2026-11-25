@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pearl</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pearl.css">
+</head>
+<body class="s-main">
+
+<!-- Placeholder mascot until the owner picks an image in Settings -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="nacre" cx="38%" cy="32%" r="75%">
+      <stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#F4EEFF"/>
+      <stop offset=".75" stop-color="#E2D6FF"/><stop offset="1" stop-color="#C9E9F5"/>
+    </radialGradient>
+    <symbol id="pearl" viewBox="0 0 120 120">
+      <ellipse cx="60" cy="112" rx="30" ry="5" fill="rgba(40,20,90,.15)"/>
+      <circle cx="60" cy="60" r="48" fill="url(#nacre)" stroke="rgba(90,60,170,.18)" stroke-width="2"/>
+      <ellipse cx="42" cy="36" rx="12" ry="7" fill="#fff" opacity=".9" transform="rotate(-30 42 36)"/>
+      <circle cx="46" cy="62" r="5.5" fill="#2A2350"/><circle cx="74" cy="62" r="5.5" fill="#2A2350"/>
+      <circle cx="47.8" cy="60" r="1.8" fill="#fff"/><circle cx="75.8" cy="60" r="1.8" fill="#fff"/>
+      <ellipse cx="36" cy="74" rx="7" ry="4" fill="#FF8DBB" opacity=".55"/><ellipse cx="84" cy="74" rx="7" ry="4" fill="#FF8DBB" opacity=".55"/>
+      <path d="M53 74 Q60 81 67 74" fill="none" stroke="#2A2350" stroke-width="3.2" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ================= MAIN WINDOW ================= -->
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span class="brand-mark"></span><span class="brand-name">Pearl</span></div>
+    <nav class="lists">
+      <a href="#today" data-nav="today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>Today</span><b>3</b></a>
+      <a href="#today" data-nav="daily"><svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3M4 11V9a4 4 0 0 1 4-4h12M7 22l-3-3 3-3M20 13v2a4 4 0 0 1-4 4H4"/></svg><span>Every day</span><b>2</b></a>
+      <a href="#goals" data-nav="goals"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg><span>Goals</span><b>4</b></a>
+      <a href="#today" data-nav="upcoming"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Upcoming</span></a>
+      <a href="#today" data-nav="done"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg><span>Done</span></a>
+      <a href="#settings" data-nav="settings" class="settings-link"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Settings</span></a>
+    </nav>
+    <div class="points">
+      <span class="pts-label">Your points</span>
+      <strong>1,240</strong>
+      <span class="pts-today">+45 today</span>
+    </div>
+  </aside>
+
+  <!-- ---------- TODAY ---------- -->
+  <main class="page page-today" data-page="today">
+    <header class="top">
+      <h1>Wednesday, November 25</h1>
+      <p>3 things left today. Two already done.</p>
+    </header>
+
+    <div class="deadline card">
+      <div class="dl-ring">
+        <svg viewBox="0 0 120 120" class="ring">
+          <circle cx="60" cy="60" r="50" class="ring-track"/>
+          <circle cx="60" cy="60" r="50" class="ring-fill" pathLength="100" stroke-dasharray="64 100"/>
+        </svg>
+        <div class="ring-text"><span data-count>2h 17m</span><small data-sec>00s left</small></div>
+      </div>
+      <div class="dl-copy">
+        <p>Get it all done by</p>
+        <strong>4:15 PM</strong>
+        <button class="ghost">Change time</button>
+      </div>
+    </div>
+
+    <section class="today card">
+      <div class="panel-head"><h2>Today</h2><span class="count-pill">2 of 5</span></div>
+      <ul class="tasks">
+        <li class="task c3 done"><button class="check" aria-label="Done"></button><span class="name">Take meds</span><span class="when">9:00 AM</span><span class="pts">+10</span></li>
+        <li class="task c1 done"><button class="check" aria-label="Done"></button><span class="name">Reply to landlord about the sink</span><span class="when">1:00 PM</span><span class="pts">+15</span></li>
+        <li class="task c2"><button class="check" aria-label="Mark done"></button><span class="name">Pick up prescription</span><span class="when">3:30 PM</span><span class="pts">+20</span></li>
+        <li class="task c4"><button class="check" aria-label="Mark done"></button><span class="name">30 minute walk <em class="goal-tag">Walk 20 times</em></span><span class="when">Any time</span><span class="pts">+15</span></li>
+        <li class="task c1"><button class="check" aria-label="Mark done"></button><span class="name">Email the dentist</span><span class="when">Any time</span><span class="pts">+10</span></li>
+      </ul>
+      <form class="add" onsubmit="return false">
+        <span class="plus">+</span>
+        <input placeholder="Add a task, like &ldquo;gym by 5pm&rdquo;">
+      </form>
+    </section>
+
+    <section class="daily card">
+      <div class="panel-head"><h2>Every day</h2><button class="ghost small">Edit</button></div>
+      <ul class="routines">
+        <li class="routine c2"><span class="r-time">6:00 PM</span><span class="name">Laundry</span><span class="streak">4 day streak</span></li>
+        <li class="routine c3"><span class="r-time">8:30 PM</span><span class="name">Dishes</span><span class="streak">11 day streak</span></li>
+        <li class="routine c4"><span class="r-time">Mon, Thu</span><span class="name">Water plants</span><span class="streak">2 week streak</span></li>
+      </ul>
+    </section>
+
+    <div class="pet">
+      <div class="bubble">Two down already! Laundry's at 6:00, I'll give you a poke.</div>
+      <div class="mascot"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
+    </div>
+  </main>
+
+  <!-- ---------- GOALS ---------- -->
+  <main class="page page-goals" data-page="goals" hidden>
+    <header class="top goals-top">
+      <div>
+        <h1>Goals</h1>
+        <p>Bigger things you're working toward. Finish one for bonus points.</p>
+      </div>
+      <button class="primary" data-open="new-goal">New goal</button>
+    </header>
+
+    <div class="goal-grid">
+      <article class="goal card c4">
+        <div class="g-head">
+          <span class="g-icon"><svg viewBox="0 0 24 24"><circle cx="13" cy="4.5" r="2"/><path d="M9 21l2.5-6.5L14 17v4M7 12l3-4 4 1.5 2.5 3M11.5 14.5 13 9"/></svg></span>
+          <div><h3>Walk 20 times this month</h3><p>13 of 20 walks, by Nov 30</p></div>
+          <span class="g-reward">+150</span>
+        </div>
+        <div class="pips" style="--n:20">
+          <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="g-foot"><span class="g-link">Counts when you finish <b>30 minute walk</b></span><button class="ghost small">Log one</button></div>
+      </article>
+
+      <article class="goal card c1">
+        <div class="g-head">
+          <span class="g-icon"><svg viewBox="0 0 24 24"><path d="M5 11a7 6 0 0 1 13-1h2v4h-2a7 6 0 0 1-3 3v3h-3v-2h-3v2H6v-3.5A6 6 0 0 1 5 11z"/><circle cx="15" cy="10" r=".8"/></svg></span>
+          <div><h3>Save for a new monitor</h3><p>$185 of $300, by Dec 20</p></div>
+          <span class="g-reward">+200</span>
+        </div>
+        <div class="bar"><i style="width:62%"></i><span>62%</span></div>
+        <div class="g-foot"><span class="g-link">You add to this one yourself</span><button class="ghost small">Add amount</button></div>
+      </article>
+
+      <article class="goal card c2">
+        <div class="g-head">
+          <span class="g-icon"><svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3M4 11V9a4 4 0 0 1 4-4h12M7 22l-3-3 3-3M20 13v2a4 4 0 0 1-4 4H4"/></svg></span>
+          <div><h3>Laundry every day for 2 weeks</h3><p>4 day streak, 10 to go</p></div>
+          <span class="g-reward">+250</span>
+        </div>
+        <div class="days">
+          <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="is-today"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="g-foot"><span class="g-link">Counts when you finish <b>Laundry</b></span><span class="g-note">Miss a day and it starts over</span></div>
+      </article>
+
+      <article class="goal card c3">
+        <div class="g-head">
+          <span class="g-icon"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h5v17H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-5v17h5a2 2 0 0 1 2 2z"/></svg></span>
+          <div><h3>Read 2 books</h3><p>1 of 2 books, by Dec 31</p></div>
+          <span class="g-reward">+100</span>
+        </div>
+        <div class="pips big" style="--n:2"><i class="on"></i><i></i></div>
+        <div class="g-foot"><span class="g-link">You log these yourself</span><button class="ghost small">Log one</button></div>
+      </article>
+
+      <article class="goal card c3">
+        <div class="g-head">
+          <span class="g-icon"><svg viewBox="0 0 24 24"><path d="M4 11h16a8 8 0 0 1-16 0zM8 7c0-1.5 1-1.5 1-3M12 7c0-1.5 1-1.5 1-3M16 7c0-1.5 1-1.5 1-3"/></svg></span>
+          <div><h3>Cook at home 10 times</h3><p>3 of 10 meals, by Dec 15</p></div>
+          <span class="g-reward">+120</span>
+        </div>
+        <div class="pips" style="--n:10"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="g-foot"><span class="g-link">Counts when you finish <b>Cook dinner</b></span><button class="ghost small">Log one</button></div>
+      </article>
+
+      <article class="goal card c1">
+        <div class="g-head">
+          <span class="g-icon"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></span>
+          <div><h3>In bed by 1 AM, 5 nights a week</h3><p>2 of 5 this week</p></div>
+          <span class="g-reward">+80</span>
+        </div>
+        <div class="week">
+          <span class="on">M</span><span class="miss">T</span><span class="on">W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+        </div>
+        <div class="g-foot"><span class="g-link">Resets every Monday</span><button class="ghost small">Log tonight</button></div>
+      </article>
+
+      <section class="card finished span2">
+        <h2>Finished</h2>
+        <ul>
+          <li><span class="tick"></span><span class="name">Clean out the closet</span><span class="when">Nov 18</span><span class="pts">+120</span></li>
+          <li><span class="tick"></span><span class="name">Dentist checkup</span><span class="when">Nov 3</span><span class="pts">+80</span></li>
+        </ul>
+      </section>
+    </div>
+
+    <aside class="goals-side">
+      <section class="card helps">
+        <h2>Today helps with</h2>
+        <ul>
+          <li class="c4"><span class="name">30 minute walk</span><span class="arrow">counts toward</span><b>Walk 20 times</b></li>
+          <li class="c2"><span class="name">Laundry at 6:00 PM</span><span class="arrow">counts toward</span><b>Laundry for 2 weeks</b></li>
+        </ul>
+      </section>
+      <div class="pet">
+        <div class="bubble">13 walks! Seven more and that's 150 points.</div>
+        <div class="mascot"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ---------- SETTINGS ---------- -->
+  <main class="page page-settings" data-page="settings" hidden>
+    <header class="top">
+      <h1>Settings</h1>
+      <p>Make Pearl yours. Changes show up right away.</p>
+    </header>
+
+    <section class="card colors">
+      <div class="panel-head"><h2>Colors</h2><button class="ghost small" id="reset-colors">Reset</button></div>
+      <p class="hint">Start from a set, then change any color you like.</p>
+      <div class="presets" id="presets"></div>
+      <div class="pickers" id="pickers"></div>
+      <label class="glow-row">
+        <span><b>Background glow</b><small>How much color tints the background</small></span>
+        <input type="range" id="glow" min="0" max="100">
+      </label>
+    </section>
+
+    <section class="card mascot-set">
+      <div class="panel-head"><h2>Mascot</h2></div>
+      <div class="mascot-pick">
+        <div class="mascot big-preview"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
+        <div>
+          <label class="primary file-btn">Choose image<input type="file" id="mascot-file" accept="image/png,image/webp,image/gif"></label>
+          <button class="ghost small" id="mascot-reset">Use the default</button>
+          <p class="hint">A PNG with a transparent background works best.</p>
+        </div>
+      </div>
+      <div class="set-row">
+        <span><b>How often it talks</b></span>
+        <div class="seg"><button>Wins only</button><button class="on">Sometimes</button><button>A lot</button></div>
+      </div>
+    </section>
+
+    <section class="card reminders">
+      <div class="panel-head"><h2>Reminders</h2></div>
+      <div class="set-row"><span><b>Lock the screen for scheduled tasks</b><small>Every-day tasks and anything with a time</small></span><span class="toggle on"></span></div>
+      <div class="set-row"><span><b>Warning before the lock</b><small>Time to pause a game</small></span><span class="value">15 seconds</span></div>
+      <div class="set-row"><span><b>Ask again after dismissing</b><small>Corner popups until you answer</small></span><span class="value">Every 5 min</span></div>
+    </section>
+  </main>
+</div>
+
+<!-- ================= NEW GOAL SHEET ================= -->
+<div class="sheet-veil" id="new-goal" hidden>
+  <form class="sheet card" onsubmit="return false">
+    <h2>New goal</h2>
+    <label class="field"><span>What's the goal?</span><input value="Go to the gym 12 times"></label>
+    <div class="field"><span>How do you track it?</span>
+      <div class="seg kind"><button type="button" class="on">Do it a number of times</button><button type="button">Reach an amount</button><button type="button">Keep a streak</button></div>
+    </div>
+    <div class="field-row">
+      <label class="field"><span>Target</span><input value="12"></label>
+      <label class="field"><span>Done by</span><input value="Dec 31"></label>
+    </div>
+    <label class="field"><span>Count it when I finish</span>
+      <div class="fake-select">Gym <small>task</small></div>
+    </label>
+    <div class="field-row">
+      <div class="field"><span>Color</span><div class="swatches"><i class="c1 on"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i></div></div>
+      <label class="field"><span>Bonus points</span><input value="150"></label>
+    </div>
+    <div class="sheet-actions">
+      <button type="button" class="secondary" data-close>Cancel</button>
+      <button type="button" class="primary" data-close>Create goal</button>
+    </div>
+  </form>
+</div>
+
+<!-- ================= DESKTOP MOMENTS ================= -->
+<section class="desk" aria-label="Desktop with Pearl popups">
+  <div class="game"><div class="hud-hp"><span></span></div><div class="hud-map"></div><div class="hud-bar"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="hero"></div></div>
+  <div class="warn" role="status">
+    <div class="warn-ring"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" class="w-track"/><circle cx="20" cy="20" r="16" class="w-fill" pathLength="15" stroke-dasharray="12 15"/></svg><b data-warn>12</b></div>
+    <div class="warn-copy"><strong>Laundry in <span data-warn>12</span> seconds</strong><span>Your screen will lock. Pause your game now.</span></div>
+    <button class="secondary warn-btn">Snooze 10 min</button>
+  </div>
+  <div class="veil">
+    <div class="lock-card">
+      <div class="mascot lock-mascot"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
+      <p class="lock-time">6:00 PM</p>
+      <h2>Time for Laundry</h2>
+      <p class="lock-sub">Get it going and grab 20 points.</p>
+      <div class="lock-tags"><span class="c2">4 day streak</span><span class="c1">About 10 min</span></div>
+      <div class="lock-actions"><button class="primary">Start Laundry</button><button class="secondary">Snooze 10 min</button></div>
+      <button class="dismiss">Dismiss</button>
+    </div>
+  </div>
+  <div class="nudge" role="dialog" aria-label="Reminder">
+    <div class="mascot nudge-mascot"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
+    <div class="nudge-body">
+      <strong>Still doing Laundry?</strong>
+      <span>You dismissed it 5 min ago. I'll keep asking.</span>
+      <div class="nudge-actions"><button class="primary">Doing it now</button><button class="secondary">Ask in 5 min</button></div>
+    </div>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>

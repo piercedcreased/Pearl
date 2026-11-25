@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pearl: pick a direction</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;padding:32px;font-family:Figtree,system-ui,sans-serif;background:#F3F1F8;color:#25223A}
+  h1{margin:0 0 6px;font-size:28px}
+  p{margin:0 0 28px;color:#666}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  h2{font-size:18px;margin:0 0 10px}
+  figure{margin:0 0 16px}
+  figcaption{font-size:13px;color:#777;margin-top:6px}
+  .frame{width:100%;aspect-ratio:1280/800;overflow:hidden;border-radius:12px;box-shadow:0 6px 20px -10px rgba(0,0,0,.35);position:relative}
+  .frame iframe{position:absolute;left:0;top:0;width:1280px;height:800px;border:0;transform-origin:0 0;pointer-events:none}
+  a.open{font-size:13px;color:#6B4FE0}
+</style>
+</head>
+<body>
+<h1>Pearl: three directions</h1>
+<p>Same app, same content. Each column is one look, top to bottom: main window, 15 second warning, lock screen, corner nudge after dismissing.</p>
+<div class="grid" id="grid"></div>
+<script>
+const themes=[['lagoon','A. Lagoon'],['night','B. Night Pop'],['sticker','C. Sticker']];
+const screens=[['main','Main window'],['warn','15 second warning'],['lock','Lock screen'],['nudge','Corner nudge']];
+const grid=document.getElementById('grid');
+for(const [t,tn] of themes){
+  const col=document.createElement('div');
+  col.innerHTML=`<h2>${tn}</h2>`+screens.map(([s,sn])=>`<figure><div class="frame"><iframe src="index.html?theme=${t}&screen=${s}" loading="lazy"></iframe></div><figcaption>${sn} <a class="open" href="index.html?theme=${t}&screen=${s}" target="_blank">open full size</a></figcaption></figure>`).join('');
+  grid.appendChild(col);
+}
+function fit(){document.querySelectorAll('.frame').forEach(f=>{f.querySelector('iframe').style.transform=`scale(${f.clientWidth/1280})`})}
+addEventListener('resize',fit);fit();
+</script>
+</body>
+</html>

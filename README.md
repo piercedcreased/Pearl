@@ -48,6 +48,10 @@ pearl doesnt let you swipe it away. when something is due it takes over your scr
 - every day stuff like laundry, dishes or meds comes back on its own and keeps a streak going
 - finishing something rolls you **random points**, and every now and then you hit a lucky roll worth triple which does absolutely nothing except maybe get added to a leaderboard eventually
 
+<p align="center">
+  <img src="docs/daily.png" alt="the every day page" width="880">
+</p>
+
 <br>
 
 ## goals

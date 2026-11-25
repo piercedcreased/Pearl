@@ -1,11 +1,9 @@
-# Builds the signed Windows installer and publishes a GitHub release with latest.json,
-# which is what installed copies of Pearl check for updates.
-# Runs when a version tag (v0.2.0, ...) is pushed. Use `npm run release -- 0.2.0` to make one.
-name: Release
+# Backup only. Releases are normally built on the owner's PC by `npm run release -- 0.2.0 "notes"`,
+# which uploads the signed installer and latest.json itself.
+# This runs only when started by hand from the Actions tab, and needs the TAURI_SIGNING_PRIVATE_KEY secret.
+name: Release (backup)
 
 on:
-  push:
-    tags: ['v*']
   workflow_dispatch:
 
 permissions:

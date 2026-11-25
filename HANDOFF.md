@@ -63,7 +63,7 @@ Pearl is the owner's to-do and reminder app that pushes them to actually do thin
   - When it finds one: a banner with the notes and Update now / Later / Skip this version.
   - Settings > Updates: version, status, a Check for updates button, and an auto-check toggle.
   - Feed: `https://github.com/piercedcreased/Pearl/releases/latest/download/latest.json`.
-  - Release: `npm run release -- 0.1.1 "note" "note"` tags and pushes. `.github/workflows/release.yml` then builds, signs and publishes.
+  - Release: `npm run release -- 0.1.2 "note" "note"` builds and signs on this PC, writes `latest.json`, commits, tags, pushes, then uploads the installer, the .sig and latest.json with `gh release create`. This is the same way Windowsill releases, and it takes about 2 min. `.github/workflows/release.yml` is now a manual-only backup. It needs the GitHub secret, which once broke because a PowerShell pipe added a BOM; re-set it with `gh secret set ... < file` from bash.
   - Signing key: `C:\Users\coastlineshore\.tauri\pearl.key` (not in the repo, no password). It's also the GitHub secret `TAURI_SIGNING_PRIVATE_KEY`. **If it's lost, installed copies can never update again.**
   - `PEARL_UPDATE_FEED=http://127.0.0.1:PORT/latest.json` points at a local test feed. A full 0.1.0 to 0.1.1 self-update was verified.
 - **Discord status** (`src-tauri/src/discord.rs`, `ui/discord.js`):

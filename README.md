@@ -142,7 +142,7 @@ npm run preview
 npm run release -- 0.2.0 "what changed" "another thing that changed"
 ```
 
-that bumps the version, tags it and pushes. github builds the installer, signs it and posts the release, and everyone who has pearl gets it next time they open it
+that bumps the version, builds and signs the installer right on your pc, then pushes and posts the release to github. takes a couple minutes and everyone who has pearl gets it next time they open it or hit check for updates
 
 <br>
 

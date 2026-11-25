@@ -4,9 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pearl</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="pearl.css">
 </head>
 <body class="s-main">
@@ -242,6 +240,18 @@
       <div class="set-row"><span><b>Warning before the lock</b><small>Time to pause a game</small></span><span class="value">15 seconds</span></div>
       <div class="set-row"><span><b>Ask again after dismissing</b><small>Corner popups until you answer</small></span><span class="value">Every 5 min</span></div>
     </section>
+
+    <section class="card updates" data-status="idle">
+      <div class="panel-head"><h2>Updates</h2><span class="ver-pill">Version <span data-appver>0.1.0</span></span></div>
+      <div class="upd-status">
+        <span class="upd-dot"></span>
+        <span class="upd-text"><b data-ustatus>Check for new versions</b><small data-usub>Not checked yet</small></span>
+        <button class="primary" data-ucheck>Check for updates</button>
+      </div>
+      <div class="ub-progress" hidden><i></i></div>
+      <p class="upd-notes" data-unotes hidden></p>
+      <div class="set-row"><span><b>Check when Pearl starts</b><small>And every few hours while it's open</small></span><span class="toggle on" id="upd-auto" data-own role="switch" aria-label="Check when Pearl starts"></span></div>
+    </section>
   </main>
 </div>
 
@@ -300,6 +310,21 @@
   </div>
 </section>
 
+<!-- ================= UPDATE BANNER ================= -->
+<div class="update-banner card" id="update-banner" role="dialog" aria-label="Update available" hidden>
+  <div class="mascot ub-mascot"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
+  <div class="ub-body">
+    <strong>Pearl <span data-uv>0.2.0</span> is ready</strong>
+    <p class="ub-notes" data-unotes></p>
+    <p class="ub-err" data-uerr hidden>The update didn't finish. Try again, or check later in Settings.</p>
+    <div class="ub-progress" hidden><i></i></div>
+    <p class="ub-prog" data-uprog hidden></p>
+    <div class="ub-actions"><button class="primary" data-uinstall>Update now</button><button class="secondary" data-ulater>Later</button></div>
+    <button class="ub-skip" data-uskip>Skip this version</button>
+  </div>
+</div>
+
 <script src="app.js"></script>
+<script src="updater.js"></script>
 </body>
 </html>

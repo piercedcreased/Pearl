@@ -108,7 +108,7 @@ document.querySelectorAll('.swatches').forEach(sw => sw.addEventListener('click'
   if (e.target.tagName !== 'I') return;
   sw.querySelectorAll('i').forEach(x => x.classList.toggle('on', x === e.target));
 }));
-document.querySelectorAll('.toggle').forEach(t => t.addEventListener('click', () => t.classList.toggle('on')));
+document.querySelectorAll('.toggle:not([data-own])').forEach(t => t.addEventListener('click', () => t.classList.toggle('on')));
 
 /* ---------------- countdowns (mockup clock: 1:58 PM, due 4:15 PM) ---------------- */
 const start = Date.now(), fakeNow = (13 * 3600 + 58 * 60) * 1000, due = (16 * 3600 + 15 * 60) * 1000;

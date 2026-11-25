@@ -164,8 +164,8 @@ h2{font-size:20px;font-weight:700}
 .goals-side .bubble{margin-right:30px}
 
 /* ---------- settings ---------- */
-.page-settings{grid-template-columns:1.25fr 1fr;grid-template-rows:auto auto 1fr;
-  grid-template-areas:"top top" "colors mascot" "colors reminders";overflow:auto}
+.page-settings{grid-template-columns:1.25fr 1fr;grid-template-rows:auto auto auto auto;
+  grid-template-areas:"top top" "colors mascot" "colors reminders" "updates reminders";overflow:auto;align-content:start}
 .page-settings .top{grid-area:top}.colors{grid-area:colors;align-self:start}.mascot-set{grid-area:mascot}.reminders{grid-area:reminders;align-self:start}
 .colors,.mascot-set,.reminders{padding:20px}
 .colors .hint{margin:-4px 0 14px}
@@ -286,3 +286,36 @@ h2{font-size:20px;font-weight:700}
 .week span.miss{background:#fff;color:color-mix(in srgb,var(--soft) 60%,#fff);text-decoration:line-through}
 .days i{border-radius:5px}
 .goal-grid{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--a1) 30%,transparent) transparent;padding-right:4px}
+
+/* ---------- updates ---------- */
+.updates{grid-area:updates;padding:20px;align-self:start}
+.ver-pill{font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.8);color:var(--soft)}
+.upd-status{display:grid;grid-template-columns:14px 1fr auto;gap:12px;align-items:center;padding:12px 12px 12px 16px;border-radius:18px;background:rgba(255,255,255,.78)}
+.upd-text b{display:block;font-size:15px}
+.upd-text small{font-size:13px;color:var(--soft)}
+.upd-dot{width:12px;height:12px;border-radius:50%;background:color-mix(in srgb,var(--soft) 45%,#fff)}
+.updates[data-status=uptodate] .upd-dot{background:var(--a3)}
+.updates[data-status=available] .upd-dot,.updates[data-status=downloading] .upd-dot,.updates[data-status=installing] .upd-dot{background:var(--a2);box-shadow:0 0 0 4px color-mix(in srgb,var(--a2) 25%,transparent)}
+.updates[data-status=checking] .upd-dot{background:var(--a1);animation:blink 1s ease-in-out infinite}
+.updates[data-status=error] .upd-dot{background:#E5484D}
+@keyframes blink{50%{opacity:.25}}
+.upd-status .primary{padding:9px 16px;font-size:14px;white-space:nowrap}
+.primary:disabled{opacity:.55;cursor:default;box-shadow:none}
+.ub-progress{height:10px;border-radius:5px;background:color-mix(in srgb,var(--a1) 12%,#fff);overflow:hidden;margin-top:12px}
+.ub-progress i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,var(--a1),var(--a2));transition:width .2s}
+.upd-notes{white-space:pre-line;font-size:14px;line-height:1.5;margin-top:12px;padding:10px 14px;border-radius:14px;background:color-mix(in srgb,var(--a2) 8%,#fff)}
+.updates .set-row{margin-top:6px}
+
+.update-banner{position:fixed;top:22px;right:22px;width:380px;z-index:20;display:flex;gap:14px;padding:16px 18px 14px 14px;align-items:flex-start;background:rgba(255,255,255,.9);
+  box-shadow:0 24px 50px -20px color-mix(in srgb,var(--a1) 70%,transparent);animation:drop .45s cubic-bezier(.2,1.3,.4,1)}
+@keyframes drop{from{transform:translateY(-24px);opacity:0}}
+.ub-mascot{width:58px;height:58px;flex:none}
+.ub-body{flex:1;display:flex;flex-direction:column;min-width:0}
+.ub-body strong{font-family:var(--display);font-size:19px;font-weight:700}
+.ub-notes{white-space:pre-line;font-size:14px;line-height:1.45;color:var(--soft);margin-top:4px;max-height:84px;overflow:auto}
+.ub-err{font-size:13px;font-weight:600;color:#C2373C;margin-top:6px}
+.ub-prog{font-size:13px;font-weight:700;color:var(--a1-ink);margin-top:6px}
+.ub-actions{display:flex;gap:8px;margin-top:12px}
+.ub-actions button{flex:1;padding:9px 12px;font-size:14px}
+.ub-skip{align-self:center;margin-top:8px;font-size:13px;font-weight:600;color:var(--soft)}
+.ub-skip:hover{color:var(--ink)}

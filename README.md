@@ -19,9 +19,9 @@
 
 ## why this exists
 
-i cant make myself do normal stuff during the day unless something actually makes me. phone reminders get swiped away in half a second and then the laundry sits there for three days
+are you lazy as shit and cant remember shit and feel like you need some slop to remind you to do some shit well heres pearl my solution to being a lazy bum
 
-so pearl doesnt let you swipe it away. when something is due it takes over your screen, and if you dismiss it anyway it keeps poking you from the corner until you admit youre doing it
+pearl doesnt let you swipe it away. when something is due it takes over your screen, and if you dismiss it anyway it keeps poking you from the corner until you admit youre doing it because life needs more popups in 2026
 
 <br>
 
@@ -43,10 +43,10 @@ so pearl doesnt let you swipe it away. when something is due it takes over your 
 
 ## your day
 
-- a to do list like microsoft to do but way less clicking around
-- pick a time like **4:15pm** to have everything done by and watch the countdown all day
+- a to do list like microsoft to do but way less dogshit
+- pick a time like **4:15pm** to have everything done by and watch the countdown all day incremental fans wya 
 - every day stuff like laundry, dishes or meds comes back on its own and keeps a streak going
-- finishing something rolls you **random points**, and every now and then you hit a lucky roll worth triple
+- finishing something rolls you **random points**, and every now and then you hit a lucky roll worth triple which does absolutely nothing except maybe get added to a leaderboard eventually
 
 <br>
 

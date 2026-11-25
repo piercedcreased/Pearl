@@ -156,18 +156,20 @@ document.querySelectorAll('.swatches').forEach(sw => sw.addEventListener('click'
 }));
 document.querySelectorAll('.toggle:not([data-own])').forEach(t => t.addEventListener('click', () => t.classList.toggle('on')));
 
-/* ---------------- countdowns (mockup clock: 1:58 PM, due 4:15 PM) ---------------- */
-const start = Date.now(), fakeNow = (13 * 3600 + 58 * 60) * 1000, due = (16 * 3600 + 15 * 60) * 1000;
-const pad = n => String(n).padStart(2, '0');
+/* ---------------- 15 s warning countdown on the demo screen (the done-by countdown lives in deadline.js) ---------------- */
+const start = Date.now();
 function tick() {
-  const left = Math.max(0, Math.floor((due - fakeNow - (Date.now() - start)) / 1000));
-  const h = Math.floor(left / 3600), m = Math.floor(left % 3600 / 60), s = left % 60;
-  document.querySelectorAll('[data-count]').forEach(e => e.textContent = `${h}h ${pad(m)}m`);
-  document.querySelectorAll('[data-sec]').forEach(e => e.textContent = `${pad(s)}s left`);
   const w = 12 - Math.floor((Date.now() - start) / 1000) % 13;
   document.querySelectorAll('[data-warn]').forEach(e => e.textContent = w);
   document.querySelectorAll('.w-fill').forEach(e => e.setAttribute('stroke-dasharray', `${w} 15`));
 }
 
-if (q.get('preset') && PRESETS[q.get('preset')]) { look = { preset: q.get('preset'), colors: [...PRESETS[q.get('preset')].c], glow: look.glow }; }
+/* ---------------- demo desktop: show the owner's wallpaper behind the popups when it's there ---------------- */
+if (!document.body.classList.contains('s-main')) {
+  const wall = new Image();
+  wall.onload = () => document.querySelector('.desk').classList.add('has-wall');
+  wall.src = 'demo/wallpaper.jpg';
+}
+
+if (q.get('preset') && PRESETS[q.get('preset')]) { look = { ...look, preset: q.get('preset'), colors: [...PRESETS[q.get('preset')].c] }; }
 applyLook(); applyMascot(); route(); tick(); setInterval(tick, 1000);

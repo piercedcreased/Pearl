@@ -1,0 +1,54 @@
+/* To do page without the Every day card, the Every day page, empty pages, the time picker,
+   and the wallpaper behind the reminder popups. */
+
+/* ---------- To do ---------- */
+.page-today{grid-template-columns:1fr 320px;grid-template-rows:auto auto 1fr;grid-template-areas:"top top" "today deadline" "today pet"}
+.deadline{position:relative}
+.deadline.late .ring-text span{font-size:18px;color:var(--a2-ink)}
+.time-pop{position:absolute;top:calc(100% + 8px);right:0;z-index:15;width:290px;padding:16px;border-radius:var(--r-lg);background:#fff;
+  box-shadow:0 20px 44px -18px color-mix(in srgb,var(--a1) 70%,transparent),0 0 0 1px color-mix(in srgb,var(--a1) 12%,transparent);display:flex;flex-direction:column;gap:12px}
+.time-pop>b{font-size:14px;color:var(--soft)}
+.tp-row{display:flex;align-items:center;gap:6px}
+.tp-row>span{font-weight:800;font-size:18px}
+.tp-row select{padding:9px 10px;border-radius:var(--r-md);border:1.5px solid color-mix(in srgb,var(--a1) 18%,#fff);background:#fff;font:inherit;font-size:18px;font-weight:700;color:var(--ink)}
+.tp-ampm{margin-left:auto}
+.tp-actions{display:flex;gap:8px;justify-content:flex-end}
+.tp-actions button{padding:8px 16px;font-size:14px}
+
+/* ---------- Every day ---------- */
+.page-daily{grid-template-columns:1fr 340px;grid-template-rows:auto auto 1fr;grid-template-areas:"top top" "list add" "list pet"}
+.page-daily .top{grid-area:top}
+.routine-list{grid-area:list;padding:20px;align-self:start}
+.routine-add{grid-area:add;padding:20px;display:flex;flex-direction:column;gap:12px}
+.routine-add h2{font-size:18px}
+.page-daily .pet{grid-area:pet}
+.routines.big{gap:8px}
+.routines.big .routine{grid-template-columns:28px 1fr auto auto auto;padding:12px 14px}
+.r-main{display:flex;flex-direction:column;gap:1px;min-width:0}
+.r-days{font-size:12px;font-weight:600;color:var(--soft)}
+.routines.big .r-time{min-width:0}
+.routine .check{width:26px;height:26px;border-radius:50%;border:2.5px solid var(--c);display:grid;place-items:center}
+.routine.done{background:rgba(255,255,255,.4)}
+.routine.done .check{background:var(--c)}
+.routine.done .check::after{content:"";width:10px;height:6px;border:solid var(--on);border-width:0 0 3px 3px;transform:translateY(-1px) rotate(-45deg)}
+.routine.done .name{text-decoration:line-through;text-decoration-thickness:2px;opacity:.45}
+.lock-chip{font-size:12px;font-weight:700;padding:3px 9px;border-radius:var(--r-sm);background:color-mix(in srgb,var(--a1) 12%,#fff);color:var(--a1-ink)}
+.lock-chip.off{background:rgba(255,255,255,.85);color:var(--soft)}
+.days-pick{display:flex;gap:6px}
+.days-pick button{width:34px;height:34px;border-radius:var(--r-md);font-weight:800;font-size:13px;background:#fff;color:var(--soft);border:1.5px solid color-mix(in srgb,var(--a1) 16%,#fff)}
+.days-pick button.on{background:var(--a1);color:var(--on-a1);border-color:var(--a1)}
+.routine-add .set-row{padding:4px 0}
+.add-routine{align-self:flex-start}
+
+/* ---------- pages that aren't built yet ---------- */
+.page-empty{grid-template-rows:auto 1fr;align-content:start}
+.empty-state{padding:40px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center}
+.empty-state b{font-size:18px}
+.empty-state span{color:var(--soft);max-width:420px}
+
+/* ---------- the owner's wallpaper behind the reminder popups (local demo only) ---------- */
+.desk.has-wall .game{background:url(demo/wallpaper.jpg) center/cover no-repeat}
+.desk.has-wall .game>*{display:none}
+.warn-copy strong span{font-size:inherit;color:inherit}
+/* real popups sit above the taskbar; the wallpaper demo includes one */
+.desk.has-wall .nudge{bottom:60px}

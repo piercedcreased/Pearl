@@ -34,9 +34,10 @@
   }
 
   document.addEventListener('click', e => {
-    const check = e.target.closest('.page-today .task .check');
+    const check = e.target.closest('.page-today .task .check, .page-daily .routine .check');
     if (!check) return;
-    const task = check.closest('.task'), chip = task.querySelector('.pts');
+    const task = check.closest('.task, .routine');
+    const chip = task.querySelector('.pts') || { textContent: '', classList: { add() {}, remove() {}, toggle() {} } };
     if (!task.classList.contains('done')) {
       const { pts, lucky } = roll();
       task.classList.add('done');

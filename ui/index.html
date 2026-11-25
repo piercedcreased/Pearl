@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="pearl.css">
 <link rel="stylesheet" href="goals.css">
 <link rel="stylesheet" href="discord.css">
+<link rel="stylesheet" href="pages.css">
 </head>
 <body class="s-main">
 
@@ -35,11 +36,11 @@
   <aside class="side">
     <div class="brand"><span class="brand-mark"></span><span class="brand-name">Pearl</span></div>
     <nav class="lists">
-      <a href="#today" data-nav="today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>Today</span><b>3</b></a>
-      <a href="#today" data-nav="daily"><svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3M4 11V9a4 4 0 0 1 4-4h12M7 22l-3-3 3-3M20 13v2a4 4 0 0 1-4 4H4"/></svg><span>Every day</span><b>2</b></a>
+      <a href="#today" data-nav="today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>To do</span><b>3</b></a>
+      <a href="#daily" data-nav="daily"><svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3M4 11V9a4 4 0 0 1 4-4h12M7 22l-3-3 3-3M20 13v2a4 4 0 0 1-4 4H4"/></svg><span>Every day</span><b>2</b></a>
       <a href="#goals" data-nav="goals"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg><span>Goals</span><b>4</b></a>
-      <a href="#today" data-nav="upcoming"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Upcoming</span></a>
-      <a href="#today" data-nav="done"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg><span>Done</span></a>
+      <a href="#upcoming" data-nav="upcoming"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Upcoming</span></a>
+      <a href="#done" data-nav="done"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg><span>Done</span></a>
       <a href="#settings" data-nav="settings" class="settings-link"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Settings</span></a>
     </nav>
     <div class="points">
@@ -67,14 +68,22 @@
       <div class="dl-copy">
         <p>Get it all done by</p>
         <strong>4:15 PM</strong>
-        <button class="ghost">Change time</button>
+        <button class="ghost" data-change-time>Change time</button>
+      </div>
+      <div class="time-pop" role="dialog" aria-label="Pick a done-by time" hidden>
+        <b>Get it all done by</b>
+        <div class="tp-row">
+          <select data-hour aria-label="Hour"></select><span>:</span><select data-min aria-label="Minutes"></select>
+          <div class="seg tp-ampm"><button type="button" data-ampm="AM">AM</button><button type="button" data-ampm="PM" class="on">PM</button></div>
+        </div>
+        <div class="tp-actions"><button type="button" class="secondary" data-cancel>Cancel</button><button type="button" class="primary" data-save>Save</button></div>
       </div>
     </div>
 
     <section class="today card">
-      <div class="panel-head"><h2>Today</h2><span class="count-pill">2 of 5</span></div>
+      <div class="panel-head"><h2>To do</h2><span class="count-pill">2 of 5</span></div>
       <ul class="tasks">
-        <li class="task c3 done"><button class="check" aria-label="Done"></button><span class="name">Take meds</span><span class="when">9:00 AM</span><span class="pts">+10</span></li>
+        <li class="task c3 done"><button class="check" aria-label="Done"></button><span class="name">Pay the phone bill</span><span class="when">9:00 AM</span><span class="pts">+10</span></li>
         <li class="task c1 done"><button class="check" aria-label="Done"></button><span class="name">Reply to landlord about the sink</span><span class="when">1:00 PM</span><span class="pts">+15</span></li>
         <li class="task c2"><button class="check" aria-label="Mark done"></button><span class="name">Pick up prescription</span><span class="when">3:30 PM</span><span class="pts mystery">?</span></li>
         <li class="task c4"><button class="check" aria-label="Mark done"></button><span class="name">30 minute walk <em class="goal-tag">Walk 20 times</em></span><span class="when">Any time</span><span class="pts mystery">?</span></li>
@@ -86,19 +95,79 @@
       </form>
     </section>
 
-    <section class="daily card">
-      <div class="panel-head"><h2>Every day</h2><button class="ghost small">Edit</button></div>
-      <ul class="routines">
-        <li class="routine c2"><span class="r-time">6:00 PM</span><span class="name">Laundry</span><span class="streak">4 day streak</span></li>
-        <li class="routine c3"><span class="r-time">8:30 PM</span><span class="name">Dishes</span><span class="streak">11 day streak</span></li>
-        <li class="routine c4"><span class="r-time">Mon, Thu</span><span class="name">Water plants</span><span class="streak">2 week streak</span></li>
+
+    <div class="pet">
+      <div class="bubble">Two down already! Three to go before 4:15.</div>
+      <div class="mascot"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
+    </div>
+  </main>
+
+
+  <!-- ---------- EVERY DAY ---------- -->
+  <main class="page page-daily" data-page="daily" hidden>
+    <header class="top">
+      <h1>Every day</h1>
+      <p>Stuff that comes back on its own. When it's time, Pearl locks your screen.</p>
+    </header>
+
+    <section class="card routine-list">
+      <div class="panel-head"><h2>Your routines</h2><span class="count-pill">1 of 4 done today</span></div>
+      <ul class="routines big">
+        <li class="routine c3 done">
+          <button class="check" aria-label="Done today"></button>
+          <span class="r-main"><span class="name">Take meds</span><span class="r-days">Every day</span></span>
+          <span class="r-time">9:00 AM</span><span class="streak">23 day streak</span>
+          <span class="lock-chip" title="Locks your screen">Locks</span>
+        </li>
+        <li class="routine c2">
+          <button class="check" aria-label="Mark done today"></button>
+          <span class="r-main"><span class="name">Laundry</span><span class="r-days">Every day</span></span>
+          <span class="r-time">6:00 PM</span><span class="streak">4 day streak</span>
+          <span class="lock-chip" title="Locks your screen">Locks</span>
+        </li>
+        <li class="routine c3">
+          <button class="check" aria-label="Mark done today"></button>
+          <span class="r-main"><span class="name">Dishes</span><span class="r-days">Every day</span></span>
+          <span class="r-time">8:30 PM</span><span class="streak">11 day streak</span>
+          <span class="lock-chip" title="Locks your screen">Locks</span>
+        </li>
+        <li class="routine c4">
+          <button class="check" aria-label="Mark done today"></button>
+          <span class="r-main"><span class="name">Water plants</span><span class="r-days">Mon, Thu</span></span>
+          <span class="r-time">7:00 PM</span><span class="streak">2 week streak</span>
+          <span class="lock-chip off" title="Just a corner popup">Popup</span>
+        </li>
       </ul>
     </section>
 
+    <section class="card routine-add">
+      <h2>Add something every day</h2>
+      <label class="field"><span>What is it?</span><input placeholder="Take the trash out"></label>
+      <div class="field"><span>What time?</span>
+        <div class="tp-row"><select aria-label="Hour"><option>7</option><option>8</option><option selected>9</option><option>10</option></select><span>:</span><select aria-label="Minutes"><option>00</option><option>15</option><option selected>30</option><option>45</option></select>
+        <div class="seg tp-ampm"><button type="button">AM</button><button type="button" class="on">PM</button></div></div>
+      </div>
+      <div class="field"><span>Which days?</span>
+        <div class="days-pick"><button type="button" class="on">M</button><button type="button" class="on">T</button><button type="button" class="on">W</button><button type="button" class="on">T</button><button type="button" class="on">F</button><button type="button" class="on">S</button><button type="button" class="on">S</button></div>
+      </div>
+      <div class="set-row"><span><b>Lock my screen</b><small>Off means just a corner popup</small></span><span class="toggle on"></span></div>
+      <button class="primary add-routine">Add it</button>
+    </section>
+
     <div class="pet">
-      <div class="bubble">Two down already! Laundry's at 6:00, I'll give you a poke.</div>
+      <div class="bubble">Laundry's next at 6:00. I'll give you a heads up first.</div>
       <div class="mascot"><svg viewBox="0 0 120 120"><use href="#pearl"/></svg></div>
     </div>
+  </main>
+
+  <!-- ---------- UPCOMING / DONE (not built yet) ---------- -->
+  <main class="page page-empty" data-page="upcoming" hidden>
+    <header class="top"><h1>Upcoming</h1><p>To dos with a date later than today.</p></header>
+    <section class="card empty-state"><b>Nothing coming up yet</b><span>Add a to do with a date, like "dentist friday at 2pm", and it shows up here.</span></section>
+  </main>
+  <main class="page page-empty" data-page="done" hidden>
+    <header class="top"><h1>Done</h1><p>Everything you've finished, and the points it rolled.</p></header>
+    <section class="card empty-state"><b>Your finished stuff lands here</b><span>Check something off on To do or Every day and it shows up in this list.</span></section>
   </main>
 
   <!-- ---------- GOALS ---------- -->
@@ -412,6 +481,8 @@
 <script src="app.js"></script>
 <script src="updater.js"></script>
 <script src="goals.js"></script>
+<script src="deadline.js"></script>
+<script src="daily.js"></script>
 <script src="points.js"></script>
 <script src="discord.js"></script>
 </body>

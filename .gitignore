@@ -6,3 +6,6 @@ src-tauri/gen/
 .env
 .DS_Store
 Thumbs.db
+
+# owner desktop wallpaper used for local demo screenshots (someone else s artwork, keep it out of the public repo)
+ui/demo/

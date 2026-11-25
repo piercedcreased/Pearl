@@ -74,6 +74,18 @@ Pearl is the owner's to-do and reminder app that pushes them to actually do thin
   - Tested once against the owner's running Discord, then cleared.
   - The icon loads from the repo's raw GitHub URL.
 
+## Round 4 (2026-11-25)
+- **To do and Every day are separate pages.** The sidebar says "To do" (`#today`) and "Every day" (`#daily`). Upcoming (`#upcoming`) and Done (`#done`) exist as empty-state pages. Before this, every one of those links went to the To do page.
+- **Every day page** (`ui/daily.js`, `ui/pages.css`):
+  - Each routine row shows time, days, streak, and whether it locks the screen or only shows a corner popup.
+  - Checking one off rolls points.
+  - An "Add something every day" form: name, time, days, lock toggle.
+- **Change time works** (`ui/deadline.js`):
+  - A 12-hour picker (hour, 5-minute steps, AM/PM) saved in localStorage `pearl.deadline`.
+  - The countdown uses the real clock. The ring empties from 8:00 AM to the done-by time and shows "Time's up" after it.
+  - `?now=13:58` fakes the clock for screenshots.
+- **Popup demo on the owner's wallpaper:** `?screen=warn|lock|nudge` uses `ui/demo/wallpaper.jpg` when it exists, and falls back to the drawn game scene. `ui/demo/` is gitignored, because the wallpaper is someone else's artwork plus the owner's desktop, so keep it out of the public repo. The readme uses the drawn scene.
+
 ## Next up (in rough order)
 1. **Real data:** tasks, routines, goals and points saved to disk (JSON in the app data dir via a Rust command, or tauri-plugin-store). Replace the sample HTML with rendering from data. Make adding, editing and deleting work.
 2. **The lock flow for real:**
@@ -83,7 +95,7 @@ Pearl is the owner's to-do and reminder app that pushes them to actually do thin
    - A scheduler in Rust, so it works while the main window is closed.
    - A tray icon and start with Windows.
 3. Mascot pop-ups with random lines.
-4. The Every day, Upcoming and Done pages (the sidebar links exist, but the pages don't).
+4. The Upcoming and Done pages (empty states for now).
 5. What points are for.
 6. Android, plus settings sync.
 

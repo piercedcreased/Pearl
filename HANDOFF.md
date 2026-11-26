@@ -109,7 +109,7 @@ The owner asked for everything from their request template plus the mascot behav
 - **Snooze punishment** (owner's call, disclosed in the readme's warning box and "snooze punishment" section):
   - Snoozes = lock/warning "Snooze 10 min", mascot "5 more min", and "no" on the ask.
   - From the 4th snooze on, each one has a chance of a **lockdown**: 0.2 + 0.15 per snooze past 4 + 0.05 per ignore, capped at 0.85.
-  - Lockdown = the lock window in `mode=hard`: no buttons, a countdown of 60 s + 12 s per snooze past 4 + up to 30 s random, capped at 120 s. Rust (`lock_hold`) keeps it on top and focused and blocks Alt+F4. Ctrl+Alt+Del can't be blocked, and the readme says so.
+  - Lockdown = the lock window in `mode=hard`: no buttons, a countdown of 60 s + 12 s per snooze past 4 + up to 30 s random, capped at 120 s. The lock guard keeps it on top and focused, and the key hook blocks Alt+F4 (see round 7). Ctrl+Alt+Del can't be blocked, and the readme says so.
   - After it, the mascot nudges again (at least "mad").
 - **Tray** (`lib.rs`): left click opens the tray widget right above the icon (like Mullvad): done-by countdown, to-do left, every day x/y, points, next routine, Open Pearl / Try a reminder / Quit. It hides when it loses focus. Double click opens Pearl. Right click menu: Open, Try a reminder now, Quit. The main window writes `pearl.status` for the widget.
 - **Single instance:** opening Pearl again brings up the hidden one.
@@ -138,9 +138,12 @@ The owner was angry that 0.1.2 shipped with made-up to-dos and goals that couldn
 - Readme images still show the old sample content (same look). Re-take them with made-up content in a test copy when convenient.
 
 ## Round 7 (2026-11-25): the lock can't be stepped around
-- While a lock window is open (normal or lockdown), a low-level keyboard hook (`keyguard` in popups.rs) swallows the Windows keys, Alt+Tab, Alt+Esc, Alt+F4, Alt+Space and Ctrl+Esc / Ctrl+Shift+Esc. It's installed only while a lock is open (`popup_open` lock -> on, `popup_close` lock -> off), on its own message-pumping thread, so it never slows typing or games otherwise. Ctrl+Alt+Del can't be blocked by any app; the readme says it's the way out.
+- While a lock window is open (normal or lockdown), a low-level keyboard hook (`keyguard` in popups.rs) swallows the Windows keys, Alt+Tab, Alt+Esc, Alt+F4, Alt+Space and Ctrl+Esc / Ctrl+Shift+Esc. Ctrl+Alt+Del can't be blocked by any app; the readme says it's the way out.
+- **The hook runs in a helper process**, `pearl.exe --keyguard <pearl pid>` (handled at the top of `run()` in lib.rs, before Tauri or single-instance start). `popup_open` lock spawns it, `popup_close` lock kills it, and it exits by itself if Pearl dies, so keys can never stay blocked. Why: tested 2026-11-26 on Windows 11 (26200), the exact same hook inside Pearl's own process swallowed every Windows key press and Start/Search opened anyway. A separate process holds it (fake and real presses, lock stayed in front 25 s straight).
+- Keep the hook lean: no GetAsyncKeyState, no file I/O in it (Ctrl is tracked from the hook's own events).
+- The lock guard thread (`start_lock_guard`) grabs focus once at open, then only when the lock isn't in front (checked every 40 ms, at most every 150 ms). Don't grab every tick: tao's `set_focus` presses a fake Alt each time (shows as vk 0xA4 flags 0x31 in a key log).
 - Alt+F4 can't close any warning, lock or mascot window (they close only through the flow, with `destroy`), so a reminder can't be skipped by closing it.
-- **Not tested with real key presses yet.** The test copy's lock wasn't up when test keys were sent (the owner clicked Start on it first). Never send synthetic keys to the owner's desktop unless a Pearl lock is confirmed on screen and focused: Alt+F4 goes to whatever is in front.
+- Testing keys: never send synthetic keys to the owner's desktop unless a Pearl lock is confirmed in front (check the foreground window's pid first): Alt+F4 goes to whatever is in front. Ask the owner to keep hands off during a synthetic test.
 
 ## Next up (in rough order)
 1. To-dos with a time could feed the reminder flow too (right now only Every day routines remind).

@@ -44,6 +44,9 @@ pub fn app_like(w: &WebviewWindow) {
 static SEQ: AtomicU32 = AtomicU32::new(0);
 /// True while a lockdown is running: the lock window can't be closed and keeps grabbing focus.
 pub static HOLD: AtomicBool = AtomicBool::new(false);
+/// A lock window is open: the guard keeps it in front.
+static LOCKED: AtomicBool = AtomicBool::new(false);
+static GUARD: AtomicBool = AtomicBool::new(false);
 /// The blurred picture behind the lock screen: width, height, RGBA pixels.
 static BACKDROP: Mutex<Option<(u32, u32, Vec<u8>)>> = Mutex::new(None);
 /// When the tray widget last hid itself (ms), so the click that hid it doesn't reopen it.
@@ -114,6 +117,10 @@ pub async fn popup_open(app: AppHandle, kind: String, query: String) -> Result<(
     }
     let win = b.build().map_err(|e| e.to_string())?;
     app_like(&win);
+    if kind == "lock" {
+        LOCKED.store(true, Ordering::SeqCst);
+        start_lock_guard(app.clone());
+    }
     for w in old {
         let _ = w.destroy();
     }
@@ -180,6 +187,7 @@ fn snapshot(_x: i32, _y: i32, _w: i32, _h: i32) -> Option<(u32, u32, Vec<u8>)> {
 pub fn popup_close(app: AppHandle, kind: String) {
     if kind == "lock" {
         HOLD.store(false, Ordering::SeqCst);
+        LOCKED.store(false, Ordering::SeqCst);
         keyguard::off();
     }
     for w in popups_of(&app, &kind) {
@@ -190,21 +198,51 @@ pub fn popup_close(app: AppHandle, kind: String) {
 /// Lockdown: for `secs` seconds the lock window can't be closed and keeps itself in front.
 /// Ctrl+Alt+Del still works (Windows doesn't let any app block it).
 #[tauri::command]
-pub fn lock_hold(app: AppHandle, secs: u64) {
-    HOLD.store(true, Ordering::SeqCst);
+pub fn lock_hold(_app: AppHandle, _secs: u64) {
+    // The guard (started with every lock) already keeps it in front; kept for the flow's call.
+}
+
+/// While any lock is open: it takes focus once when it opens, then stays on top. With the
+/// Windows key, Alt+Tab etc. blocked (keyguard) and the whole screen covered, nothing else can
+/// get in front. If something still does, it takes focus back at most once a second.
+/// (Each focus grab makes Windows inject a fake Alt press, and grabbing over and over is what
+/// let the Windows key and Alt+Tab slip through in testing, so it must stay rare.)
+fn start_lock_guard(app: AppHandle) {
+    if GUARD.swap(true, Ordering::SeqCst) {
+        return;
+    }
     std::thread::spawn(move || {
-        let end = now_ms() + secs.min(180) * 1000;
-        while HOLD.load(Ordering::SeqCst) && now_ms() < end {
-            for w in popups_of(&app, "lock") {
-                let _ = w.set_always_on_top(true);
-                if !w.is_focused().unwrap_or(true) {
+        let mut last_grab = 0u64;
+        let mut first = true;
+        loop {
+            let locks = popups_of(&app, "lock");
+            if locks.is_empty() || !LOCKED.load(Ordering::SeqCst) {
+                break;
+            }
+            for w in locks {
+                // grab back fast (Start/Search close when they lose focus), but not in a tight
+                // loop: each grab presses a fake Alt, which is why it isn't every tick
+                if first || (!lock_in_front(&w) && now_ms().saturating_sub(last_grab) > 150) {
+                    let _ = w.set_always_on_top(true);
                     let _ = w.set_focus();
+                    last_grab = now_ms();
                 }
             }
-            std::thread::sleep(Duration::from_millis(400));
+            first = false;
+            std::thread::sleep(Duration::from_millis(40));
         }
-        HOLD.store(false, Ordering::SeqCst);
+        GUARD.store(false, Ordering::SeqCst);
     });
+}
+
+#[cfg(windows)]
+fn lock_in_front(w: &WebviewWindow) -> bool {
+    let fg = unsafe { windows_sys::Win32::UI::WindowsAndMessaging::GetForegroundWindow() } as isize;
+    w.hwnd().map(|h| h.0 as isize == fg).unwrap_or(true)
+}
+#[cfg(not(windows))]
+fn lock_in_front(w: &WebviewWindow) -> bool {
+    w.is_focused().unwrap_or(true)
 }
 
 /// A timer that isn't slowed down while the main window is hidden: after `ms`, the main
@@ -321,28 +359,32 @@ pub fn toggle_tray_widget(app: &AppHandle, rect: Rect) {
 /// never slows typing or games otherwise). Ctrl+Alt+Del can't be blocked by any app, and the
 /// readme says so.
 #[cfg(windows)]
-mod keyguard {
-    use std::sync::atomic::{AtomicBool, AtomicU32, Ordering::SeqCst};
+pub mod keyguard {
+    use std::sync::atomic::{AtomicBool, Ordering::SeqCst};
+    use std::sync::Mutex;
     use windows_sys::Win32::System::LibraryLoader::GetModuleHandleW;
-    use windows_sys::Win32::System::Threading::GetCurrentThreadId;
+    use windows_sys::Win32::System::Threading::{OpenProcess, WaitForSingleObject, INFINITE, PROCESS_SYNCHRONIZE};
     use windows_sys::Win32::UI::Input::KeyboardAndMouse::*;
     use windows_sys::Win32::UI::WindowsAndMessaging::*;
 
-    static WANT: AtomicBool = AtomicBool::new(false);
-    static RUNNING: AtomicBool = AtomicBool::new(false);
-    static THREAD: AtomicU32 = AtomicU32::new(0);
+    /// Ctrl tracked from the hook's own events (no GetAsyncKeyState in here: the hook has
+    /// to answer Windows as fast as it can, or Windows lets the key through anyway).
+    static CTRL: AtomicBool = AtomicBool::new(false);
 
     unsafe extern "system" fn hook(code: i32, w: usize, l: isize) -> isize {
         unsafe {
             if code == HC_ACTION as i32 {
                 let k = &*(l as *const KBDLLHOOKSTRUCT);
                 let vk = k.vkCode as u16;
+                let up = k.flags & LLKHF_UP != 0;
+                if matches!(vk, VK_LCONTROL | VK_RCONTROL | VK_CONTROL) {
+                    CTRL.store(!up, SeqCst);
+                }
                 let alt = k.flags & LLKHF_ALTDOWN != 0;
-                let ctrl = GetAsyncKeyState(VK_CONTROL as i32) < 0;
                 let block = vk == VK_LWIN
                     || vk == VK_RWIN
                     || (alt && matches!(vk, VK_TAB | VK_ESCAPE | VK_F4 | VK_SPACE))
-                    || (ctrl && vk == VK_ESCAPE);
+                    || (CTRL.load(SeqCst) && vk == VK_ESCAPE);
                 if block {
                     return 1;
                 }
@@ -351,36 +393,62 @@ mod keyguard {
         }
     }
 
+    /// The hook runs in a small helper process (`pearl.exe --keyguard <pid>`), not in Pearl
+    /// itself. Tested on Windows 11: the same hook inside Pearl swallowed every Windows key
+    /// press and Start/Search still opened; from a separate process it holds.
+    static CHILD: Mutex<Option<std::process::Child>> = Mutex::new(None);
+
     pub fn on() {
-        WANT.store(true, SeqCst);
-        if RUNNING.swap(true, SeqCst) {
-            return;
-        }
-        std::thread::spawn(|| unsafe {
-            let h = SetWindowsHookExW(WH_KEYBOARD_LL, Some(hook), GetModuleHandleW(std::ptr::null()), 0);
-            THREAD.store(GetCurrentThreadId(), SeqCst);
-            let mut msg: MSG = std::mem::zeroed();
-            // the hook only works while this thread keeps pumping messages
-            while WANT.load(SeqCst) && GetMessageW(&mut msg, std::ptr::null_mut(), 0, 0) > 0 {}
-            if !h.is_null() {
-                UnhookWindowsHookEx(h);
+        let mut c = CHILD.lock().unwrap();
+        if let Some(ch) = c.as_mut() {
+            if matches!(ch.try_wait(), Ok(None)) {
+                return;
             }
-            THREAD.store(0, SeqCst);
-            RUNNING.store(false, SeqCst);
+        }
+        use std::os::windows::process::CommandExt;
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        *c = std::env::current_exe().ok().and_then(|exe| {
+            std::process::Command::new(exe)
+                .args(["--keyguard", &std::process::id().to_string()])
+                .creation_flags(CREATE_NO_WINDOW)
+                .spawn()
+                .ok()
         });
     }
 
     pub fn off() {
-        WANT.store(false, SeqCst);
-        let t = THREAD.load(SeqCst);
-        if t != 0 {
-            unsafe { PostThreadMessageW(t, WM_QUIT, 0, 0) };
+        if let Some(mut ch) = CHILD.lock().unwrap().take() {
+            let _ = ch.kill();
+            let _ = ch.wait();
+        }
+    }
+
+    /// The helper process: hold the hook until Pearl kills it, or until Pearl itself is gone
+    /// (so a crash can never leave your keys blocked).
+    pub fn child_main(parent: u32) {
+        unsafe {
+            std::thread::spawn(move || {
+                let h = OpenProcess(PROCESS_SYNCHRONIZE, 0, parent);
+                if !h.is_null() {
+                    WaitForSingleObject(h, INFINITE);
+                }
+                std::process::exit(0);
+            });
+            let h = SetWindowsHookExW(WH_KEYBOARD_LL, Some(hook), GetModuleHandleW(std::ptr::null()), 0);
+            if h.is_null() {
+                return;
+            }
+            let mut msg: MSG = std::mem::zeroed();
+            // the hook only works while this thread keeps pumping messages
+            while GetMessageW(&mut msg, std::ptr::null_mut(), 0, 0) > 0 {}
+            UnhookWindowsHookEx(h);
         }
     }
 }
 
 #[cfg(not(windows))]
-mod keyguard {
+pub mod keyguard {
     pub fn on() {}
     pub fn off() {}
+    pub fn child_main(_parent: u32) {}
 }

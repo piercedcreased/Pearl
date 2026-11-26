@@ -35,6 +35,12 @@ fn quit(app: tauri::AppHandle) {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // `pearl.exe --keyguard <pid>`: the lock's key blocker, run as its own little process
+    let args: Vec<String> = std::env::args().collect();
+    if let Some(i) = args.iter().position(|a| a == "--keyguard") {
+        popups::keyguard::child_main(args.get(i + 1).and_then(|p| p.parse().ok()).unwrap_or(0));
+        return;
+    }
     #[allow(unused_mut)]
     let mut context = tauri::generate_context!();
 

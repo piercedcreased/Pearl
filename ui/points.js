@@ -1,10 +1,15 @@
-// Points for tasks and every-day items are random (the owner's call, 2026-11-25):
-// nothing is weighed, so laundry and a big project roll the same dice.
-// Each finish rolls 5-20 points, with a 1 in 20 "lucky" roll worth triple.
-// Goals still pay the fixed bonus that's set on the goal.
+// Points are random (the owner's call, 2026-11-25): nothing is weighed, so laundry and a big
+// project roll the same dice. Each finish rolls 5-20 points, with a 1 in 20 "lucky" roll worth
+// triple. Goals still pay the fixed bonus that's set on the goal.
+// Saved in localStorage pearl.points: { total, today, day }. Starts at 0.
+// The to-do list (tasks.js), Every day (daily.js) and the mascot (flow.js) pay out through here.
 
-(() => {
-  const MIN = 5, MAX = 20, LUCKY_CHANCE = 0.05, LUCKY_TIMES = 3;
+window.PearlPoints = (() => {
+  const MIN = 5, MAX = 20, LUCKY_CHANCE = 0.05, LUCKY_TIMES = 3, KEY = 'pearl.points';
+  const ymd = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  let p = { total: 0, today: 0, day: ymd() };
+  try { p = { ...p, ...JSON.parse(localStorage.getItem(KEY)) }; } catch {}
 
   function roll() {
     const base = MIN + Math.floor(Math.random() * (MAX - MIN + 1));
@@ -12,18 +17,14 @@
     return { pts: lucky ? base * LUCKY_TIMES : base, lucky };
   }
 
-  const total = document.querySelector('.points strong');
-  const today = document.querySelector('.pts-today');
-  let points = parseInt(total.textContent.replace(/,/g, ''), 10) || 0;
-  let todayPts = parseInt(today.textContent.replace(/\D/g, ''), 10) || 0;
-
   function show() {
-    total.textContent = points.toLocaleString('en-US');
-    today.textContent = `+${todayPts} today`;
+    if (p.day !== ymd()) { p.day = ymd(); p.today = 0; }
+    document.querySelectorAll('.points strong').forEach(e => e.textContent = p.total.toLocaleString('en-US'));
+    document.querySelectorAll('.pts-today').forEach(e => e.textContent = p.today ? `+${p.today} today` : 'Get one done to roll');
   }
-  // the mascot pop-up pays out through this when a reminder gets done
-  window.PearlPoints = { roll, add(pts) { points += pts; todayPts += pts; show(); } };
+  function save() { localStorage.setItem(KEY, JSON.stringify(p)); show(); }
 
+  // the little "+12" that floats up from what you checked
   function pop(anchor, text, lucky) {
     const r = anchor.getBoundingClientRect();
     const el = document.createElement('div');
@@ -35,36 +36,12 @@
     setTimeout(() => el.remove(), 1400);
   }
 
-  document.addEventListener('click', e => {
-    const check = e.target.closest('.page-today .task .check, .page-daily .routine .check');
-    if (!check) return;
-    const task = check.closest('.task, .routine');
-    const chip = task.querySelector('.pts') || { textContent: '', classList: { add() {}, remove() {}, toggle() {} } };
-    if (!task.classList.contains('done')) {
-      const { pts, lucky } = roll();
-      task.classList.add('done');
-      task.dataset.rolled = pts;
-      chip.textContent = `+${pts}`;
-      chip.classList.remove('mystery');
-      chip.classList.toggle('lucky', lucky);
-      points += pts; todayPts += pts;
-      pop(check, lucky ? `Lucky! +${pts}` : `+${pts}`, lucky);
-      check.setAttribute('aria-label', 'Done');
-    } else {
-      // Unchecking gives back exactly what was rolled, so it can't be re-rolled for more.
-      const pts = parseInt(task.dataset.rolled || chip.textContent.replace(/\D/g, ''), 10) || 0;
-      task.classList.remove('done');
-      points -= pts; todayPts = Math.max(0, todayPts - pts);
-      chip.textContent = '?';
-      chip.classList.add('mystery');
-      chip.classList.remove('lucky');
-      check.setAttribute('aria-label', 'Mark done');
-      delete task.dataset.rolled;
-    }
-    show();
-    const left = document.querySelectorAll('.page-today .task:not(.done)').length;
-    const all = document.querySelectorAll('.page-today .task').length;
-    const pill = document.querySelector('.page-today .count-pill');
-    if (pill) pill.textContent = `${all - left} of ${all}`;
-  });
+  // Unchecking gives back exactly what was rolled, so it can't be re-rolled for more.
+  const add = pts => { p.total += pts; p.today += pts; save(); };
+  const take = pts => { p.total = Math.max(0, p.total - pts); p.today = Math.max(0, p.today - pts); save(); };
+
+  addEventListener('storage', e => { if (e.key === KEY && e.newValue) { try { p = JSON.parse(e.newValue); show(); } catch {} } });
+  setInterval(show, 60e3); // a new day resets "today"
+  show();
+  return { roll, add, take, pop };
 })();

@@ -67,7 +67,8 @@ this one is mean on purpose so here it is up front:
 
 ## your day
 
-- a to do list like microsoft to do but way less dogshit
+- a to do list like microsoft to do but way less dogshit. type "gym by 5pm" and it sets the time
+- starts empty. no fake example junk, everything in it is yours and you can delete anything
 - pick a time like **4:15pm** to have everything done by and watch the countdown all day incremental fans wya 
 - every day stuff like laundry, dishes or meds comes back on its own at its time, keeps a streak going and gets saved
 - finishing something rolls you **random points**, and every now and then you hit a lucky roll worth triple which does absolutely nothing except maybe get added to a leaderboard eventually
@@ -155,8 +156,8 @@ grab the installer from [releases](../../releases/latest) and pearl keeps itself
 - [x] mascot popping up and getting mad when you ignore him
 - [x] snooze punishment
 - [x] dark mode, window colors, tray widget
-- [x] saving your every day stuff
-- [ ] saving your real tasks and goals
+- [x] saving your to dos, every day stuff, goals and points
+- [x] feels like an actual app, not a web page
 - [ ] android, with your settings synced between both
 
 <br>

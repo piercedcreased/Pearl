@@ -146,8 +146,9 @@ pub fn run() {
                 tray.build(app)?;
 
                 // Started with Windows: stay in the tray. Otherwise show the window.
-                if !std::env::args().any(|a| a == "--hidden") {
-                    if let Some(w) = app.get_webview_window("main") {
+                if let Some(w) = app.get_webview_window("main") {
+                    popups::app_like(&w);
+                    if !std::env::args().any(|a| a == "--hidden") {
                         let _ = w.show();
                     }
                 }

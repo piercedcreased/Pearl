@@ -58,3 +58,5 @@
 .routine:hover .r-del,.r-del:focus-visible{opacity:1}
 .r-del:hover{background:color-mix(in srgb,#FF3653 14%,transparent);color:#D0213C}
 .r-empty{padding:18px;text-align:center;color:var(--soft)}
+.r-empty{display:flex;flex-direction:column;gap:4px;align-items:center;padding:30px 20px}
+.r-empty b{font-size:17px;color:var(--ink)}

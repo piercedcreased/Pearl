@@ -5,7 +5,7 @@ Read this first. Last updated 2026-11-25 (round 5).
 Pearl is the owner's to-do and reminder app that pushes them to actually do things. It's Windows now and Android later, with settings synced between the two. The repo is public at https://github.com/piercedcreased/Pearl (default branch `main`).
 
 ## Where things stand
-- **Partly real now.** Every-day routines are saved (localStorage `pearl.routines`) and the whole reminder flow runs for real: scheduler, warning, lock, mascot pop-ups, lockdowns, tray. To-do tasks, goals and the points total are still sample HTML that isn't saved.
+- **Real app now.** To-dos, every-day routines, goals and points are all saved (localStorage) and start empty. The reminder flow runs for real. Not built yet: Upcoming and Done pages, dated to-dos.
 - **Installed on the owner's PC:** Pearl 0.1.0 (a local build) at `%LOCALAPPDATA%\Pearl`, with Desktop and Start menu shortcuts. Reinstalling over it: `Start-Process <installer> /S`.
 - **Released:** 0.1.2 is on GitHub (2026-11-25) with all of round 5. `npm run release` ignores an uncommitted `REQUEST-TEMPLATE.md` (the owner's notes, never uploaded).
 - **Never close the owner's running apps**, and check before restarting things. The owner games on this PC, so keep Pearl light.
@@ -126,8 +126,19 @@ The owner asked for everything from their request template plus the mascot behav
   - Start with Windows wasn't toggled in testing (it writes the registry).
   - The lockdown hasn't been tried over a real fullscreen game. Exclusive-fullscreen games may show over or under it, and the snapshot may be black.
 
+## Round 6 (2026-11-25): everything real, feels like an app
+The owner was angry that 0.1.2 shipped with made-up to-dos and goals that couldn't be deleted, a browser right-click menu and browser confirm boxes.
+- **Rule: never ship preset or sample data.** A new install starts with no tasks, routines, goals or points. Everything can be deleted. Example content belongs only in the browser demo screens and readme images.
+- **Rule: it must feel like an app, not a web page.** No browser dialogs (`alert`/`confirm`/`prompt`): use `PearlToast(text, 'Undo', fn)` from app.js. Rust's `popups::app_like` turns off the Edge right-click menu, browser keys (F5, Ctrl+R/F/P, F12, Alt+arrows), swipe navigation and autofill on every window. app.js blocks the context menu, dragging images, Ctrl+wheel zoom and those keys too. UI text can't be selected (inputs can).
+- **To do** (`ui/tasks.js`, localStorage `pearl.tasks`): add with the box ("gym by 5pm", "call mom at 3:30" set a time), check off rolls points, remove (hover x) with Undo. Finished ones clear the next day. The header line, count, sidebar number and mascot bubble follow the list.
+- **Points** (`ui/points.js`, `pearl.points` {total, today, day}): start at 0, saved. `PearlPoints.add/take/roll/pop`. Unchecking takes back exactly what was rolled (stored on the task/routine as `rolled`).
+- **Every day** starts empty. Remove uses Undo.
+- **Goals** (`ui/goals.js`, `pearl.goals`): start empty, made with the New goal form (nothing pre-filled; errors shown in the form). Kinds: times, amount ($ if the target starts with $), streak, weekly (resets Monday, pays its bonus once per week), percent, steps (add/remove steps on the card). Times/streak/weekly can count an Every day routine ("Count it when I finish"), via `PearlGoals.routineDone`. Reaching the target pays the bonus once and moves it to Finished. Every goal and finished goal has a delete button with Undo. Discord reads goals from `PearlGoals.list()`.
+- Tested in a clean test copy (`identifier app.pearl.reminders.test2`): fresh install is empty everywhere; tasks, every kind of goal, delete/undo, routine links and points all worked.
+- Readme images still show the old sample content (same look). Re-take them with made-up content in a test copy when convenient.
+
 ## Next up (in rough order)
-1. **Real data:** to-do tasks, goals and the points total saved (routines already are). Tasks with a time could feed the same reminder flow.
+1. To-dos with a time could feed the reminder flow too (right now only Every day routines remind).
 2. Upcoming and Done pages (empty states for now).
 3. What points are for. The owner's "not sure yet" list: a points leaderboard that can't be farmed by spam-checking, and a shared daily task list (how to confirm people really did them is the open problem).
 4. Android, plus settings sync.

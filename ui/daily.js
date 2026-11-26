@@ -1,5 +1,5 @@
 // Every day page: routines with a time and days. Saved in localStorage pearl.routines, so the
-// reminders (flow.js) know what's due. The first run starts from the sample rows in the HTML.
+// reminders (flow.js) know what's due. Starts empty.
 // Each routine: { id, name, h, m (24 h), days [Mon..Sun booleans], lock, streak, doneOn, c }
 
 window.PearlDaily = (() => {
@@ -12,26 +12,9 @@ window.PearlDaily = (() => {
   const daysText = days => days.every(Boolean) ? 'Every day' : days.map((on, i) => on ? NAMES[i] : null).filter(Boolean).join(', ') || 'No days picked';
   const streakText = n => !n ? 'New' : n >= 14 && n % 7 === 0 ? `${n / 7} week streak` : `${n} day streak`;
 
-  function fromHtml() {
-    return [...list.querySelectorAll('.routine')].map((li, i) => {
-      const [, hh, mm, ap] = li.querySelector('.r-time').textContent.match(/(\d+):(\d+)\s*(AM|PM)/) || [, 9, 0, 'AM'];
-      const dtext = li.querySelector('.r-days').textContent;
-      const days = dtext === 'Every day' ? Array(7).fill(true) : NAMES.map(n => dtext.includes(n));
-      const st = li.querySelector('.streak').textContent.match(/(\d+)\s*(day|week)/);
-      return {
-        id: 'r' + (i + 1), name: li.querySelector('.name').textContent,
-        h: (+hh % 12) + (ap === 'PM' ? 12 : 0), m: +mm, days,
-        lock: !li.querySelector('.lock-chip').classList.contains('off'),
-        streak: st ? +st[1] * (st[2] === 'week' ? 7 : 1) : 0,
-        doneOn: li.classList.contains('done') ? ymd() : null,
-        c: [...li.classList].find(c => /^c\d$/.test(c)) || 'c1',
-      };
-    });
-  }
-
   let routines;
   try { routines = JSON.parse(localStorage.getItem(KEY)); } catch {}
-  if (!Array.isArray(routines)) routines = fromHtml();
+  if (!Array.isArray(routines)) routines = [];
   const save = () => { localStorage.setItem(KEY, JSON.stringify(routines)); document.dispatchEvent(new Event('pearl-routines')); };
 
   function render() {
@@ -52,31 +35,46 @@ window.PearlDaily = (() => {
       li.querySelector('.streak').textContent = streakText(r.streak);
       list.appendChild(li);
     }
-    if (!routines.length) list.innerHTML = '<li class="r-empty">Nothing yet. Add something below.</li>';
+    if (!routines.length) list.innerHTML = '<li class="r-empty"><b>Nothing here yet.</b><span>Add laundry, dishes, meds... anything that comes back every day.</span></li>';
     count();
   }
 
   function count() {
     const today = ymd(), done = routines.filter(r => r.doneOn === today).length;
     page.querySelector('.count-pill').textContent = `${done} of ${routines.length} done today`;
+    const dow = (new Date().getDay() + 6) % 7, left = routines.filter(r => r.days[dow] && r.doneOn !== today).length;
+    const nav = document.querySelector('[data-nav="daily"] b');
+    if (nav) { nav.textContent = left; nav.hidden = !left; }
+    const mins = new Date().getHours() * 60 + new Date().getMinutes();
+    const next = routines.filter(r => r.days[dow] && r.doneOn !== today && r.h * 60 + r.m >= mins).sort((a, b) => (a.h * 60 + a.m) - (b.h * 60 + b.m))[0];
+    const bubble = page.querySelector('.daily-bubble');
+    if (bubble) bubble.textContent = !routines.length ? "Add your every-day stuff and I'll remind you when it's time."
+      : next ? `${next.name}'s next at ${clock(next.h, next.m)}. I'll give you a heads up first.` : 'Nothing else today. Nice.';
   }
 
-  // points.js flips the row's done class and rolls points; this saves it.
-  document.addEventListener('click', e => {
-    const check = e.target.closest('.page-daily .routine .check');
-    if (check) setTimeout(() => {
-      const li = check.closest('.routine'), r = routines.find(x => x.id === li.dataset.id);
-      if (!r) return;
-      const done = li.classList.contains('done'), today = ymd();
-      if (done && r.doneOn !== today) { r.doneOn = today; r.streak++; }
-      if (!done && r.doneOn === today) { r.doneOn = null; r.streak = Math.max(0, r.streak - 1); }
-      save(); count();
-    }, 0);
-    const del = e.target.closest('.page-daily .r-del');
-    if (del) {
-      const id = del.closest('.routine').dataset.id, r = routines.find(x => x.id === id);
-      if (r && confirm(`Remove "${r.name}"?`)) { routines = routines.filter(x => x.id !== id); save(); render(); }
+  // checking one off rolls points; unchecking gives back exactly what it rolled
+  list.addEventListener('click', e => {
+    const li = e.target.closest('.routine'); if (!li) return;
+    const r = routines.find(x => x.id === li.dataset.id); if (!r) return;
+    const today = ymd();
+    if (e.target.closest('.r-del')) {
+      const i = routines.indexOf(r);
+      routines.splice(i, 1); save(); render();
+      PearlToast(`Removed "${r.name}"`, 'Undo', () => { routines.splice(Math.min(i, routines.length), 0, r); save(); render(); });
+      return;
     }
+    const check = e.target.closest('.check'); if (!check) return;
+    if (r.doneOn !== today) {
+      const { pts, lucky } = PearlPoints.roll();
+      r.doneOn = today; r.streak++; r.rolled = pts;
+      PearlPoints.add(pts);
+      PearlPoints.pop(check, lucky ? `Lucky! +${pts}` : `+${pts}`, lucky);
+    } else {
+      PearlPoints.take(r.rolled || 0);
+      r.doneOn = null; r.streak = Math.max(0, r.streak - 1); r.rolled = 0;
+    }
+    save(); render();
+    window.PearlGoals?.routineDone(r.id, r.doneOn === today);
   });
 
   // add form: real hour/minute choices
@@ -114,9 +112,10 @@ window.PearlDaily = (() => {
   return {
     list: () => routines,
     ymd, clock,
-    markDone(id) {
+    markDone(id, pts = 0) {
       const r = routines.find(x => x.id === id); if (!r || r.doneOn === ymd()) return;
-      r.doneOn = ymd(); r.streak++; save(); render();
+      r.doneOn = ymd(); r.streak++; r.rolled = pts; save(); render();
+      window.PearlGoals?.routineDone(id, true);
     },
   };
 })();

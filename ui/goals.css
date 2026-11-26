@@ -30,3 +30,25 @@
 
 .goal-grid{align-items:start}
 .step-draft input{width:100%}
+
+/* real goals: delete button, kinds in two rows, inline amount box, errors */
+.g-head{grid-template-columns:46px 1fr auto auto}
+.g-del{width:26px;height:26px;border-radius:var(--r-sm);font-size:18px;line-height:1;color:var(--soft);opacity:0;transition:opacity .15s;align-self:start}
+.goal:hover .g-del,.finished li:hover .g-del,.g-del:focus-visible{opacity:1}
+.g-del:hover{background:color-mix(in srgb,#FF3653 14%,transparent);color:#D0213C}
+.finished li{grid-template-columns:20px 1fr auto auto 26px}
+.kinds{grid-template-columns:repeat(3,1fr)}
+.g-btns{display:flex;gap:6px}
+.g-amt{display:flex;gap:6px}
+.g-amt input{width:90px;padding:6px 10px;border-radius:var(--r-sm);background:color-mix(in srgb,var(--w) 80%,transparent);border:1.5px solid color-mix(in srgb,var(--c) 30%,transparent);font-size:14px;font-weight:600;outline:none}
+.steps li{position:relative}
+.step-del{margin-left:auto;width:22px;height:22px;border-radius:var(--r-sm);font-size:16px;line-height:1;color:var(--soft);opacity:0}
+.steps li:hover .step-del{opacity:1}
+.days{grid-template-columns:repeat(var(--n,14),1fr)}
+.week span[data-day]{cursor:pointer}
+.field select{padding:11px 14px;border-radius:var(--r-md);background:var(--w);border:1.5px solid color-mix(in srgb,var(--a1) 18%,var(--w));font:inherit;font-size:15px;font-weight:600;color:var(--ink);outline:none}
+.field input[type=date]{color-scheme:inherit}
+.field span small{font-weight:500;color:var(--soft)}
+.form-err{font-size:14px;font-weight:700;color:#D0213C}
+.g-empty{padding:40px}
+.g-empty .primary{margin-top:10px}

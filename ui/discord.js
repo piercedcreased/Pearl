@@ -24,7 +24,7 @@
     const bar = card.querySelector('.bar i');
     return bar ? parseInt(bar.style.width, 10) || 0 : 0;
   }
-  const goals = () => [...document.querySelectorAll('.goal-grid .goal')].map(card => {
+  const goals = () => window.PearlGoals ? PearlGoals.list() : [...document.querySelectorAll('.goal-grid .goal')].map(card => {
     const name = card.querySelector('h3').textContent.trim();
     return { id: name, name, pct: Math.min(100, progressOf(card)) };
   });
@@ -98,6 +98,7 @@
   $('dc-goal').addEventListener('change', e => { prefs.goal = e.target.value; save(); render(); soon(); });
   // progress changes on Goals or Today update the status (and the preview)
   document.addEventListener('input', e => { if (e.target.closest('.goal-grid')) { render(); if (prefs.on) soon(); } });
+  document.addEventListener('pearl-goals', () => { render(); if (prefs.on) soon(); });
   document.addEventListener('click', e => { if (e.target.closest('.goal-grid, .tasks')) setTimeout(() => { render(); if (prefs.on) soon(); }, 0); });
   setInterval(() => { render(); if (prefs.on && status !== 'live') push(); }, 60000);
 

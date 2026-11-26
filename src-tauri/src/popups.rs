@@ -14,6 +14,33 @@ use tauri::{
     WebviewWindow, WebviewWindowBuilder,
 };
 
+/// Make a window feel like an app instead of a web page: no Edge right-click menu, no browser
+/// keys (F5, Ctrl+R, Ctrl+F, Ctrl+P, F12, Alt+Left...), no swipe back, no autofill bubbles.
+/// Typing, copy and paste still work.
+pub fn app_like(w: &WebviewWindow) {
+    #[cfg(windows)]
+    let _ = w.with_webview(|pw| unsafe {
+        use webview2_com::Microsoft::Web::WebView2::Win32::*;
+        use windows_core::Interface;
+        let Ok(core) = pw.controller().CoreWebView2() else { return };
+        let Ok(s) = core.Settings() else { return };
+        let _ = s.SetAreDefaultContextMenusEnabled(false);
+        let _ = s.SetIsStatusBarEnabled(false);
+        if let Ok(s3) = s.cast::<ICoreWebView2Settings3>() {
+            let _ = s3.SetAreBrowserAcceleratorKeysEnabled(false);
+        }
+        if let Ok(s4) = s.cast::<ICoreWebView2Settings4>() {
+            let _ = s4.SetIsGeneralAutofillEnabled(false);
+            let _ = s4.SetIsPasswordAutosaveEnabled(false);
+        }
+        if let Ok(s6) = s.cast::<ICoreWebView2Settings6>() {
+            let _ = s6.SetIsSwipeNavigationEnabled(false);
+        }
+    });
+    #[cfg(not(windows))]
+    let _ = w;
+}
+
 static SEQ: AtomicU32 = AtomicU32::new(0);
 /// True while a lockdown is running: the lock window can't be closed and keeps grabbing focus.
 pub static HOLD: AtomicBool = AtomicBool::new(false);
@@ -84,7 +111,8 @@ pub async fn popup_open(app: AppHandle, kind: String, query: String) -> Result<(
             *BACKDROP.lock().unwrap() = snapshot(p.x, p.y, z.width as i32, z.height as i32);
         }
     }
-    b.build().map_err(|e| e.to_string())?;
+    let win = b.build().map_err(|e| e.to_string())?;
+    app_like(&win);
     for w in old {
         let _ = w.destroy();
     }
@@ -254,7 +282,10 @@ pub fn toggle_tray_widget(app: &AppHandle, rect: Rect) {
             .inner_size(W, H)
             .build()
         {
-            Ok(w) => w,
+            Ok(w) => {
+                app_like(&w);
+                w
+            }
             Err(_) => return,
         },
     };

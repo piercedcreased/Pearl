@@ -5,6 +5,37 @@ const q = new URLSearchParams(location.search);
 // win = a reminder pop-up window in the app (transparent, only the pop-up shows)
 document.body.className = `s-${q.get('screen') || 'main'}` + (q.has('still') ? ' still' : '') + (q.has('win') ? ' win' : '');
 
+/* ---------------- an app, not a web page ---------------- */
+// No right-click menu, no dragging pictures or links out, no browser keys. In the app, Rust also
+// turns off the Edge menu and browser shortcuts (popups.rs app_like); this covers the rest.
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('dragstart', e => { if (!e.target.closest?.('input, textarea')) e.preventDefault(); });
+addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if (['f3', 'f5', 'f7', 'f12', 'browserback', 'browserforward', 'browserrefresh'].includes(k) || (e.altKey && ['arrowleft', 'arrowright'].includes(k))
+    || (e.ctrlKey && ['r', 'p', 'f', 'g', 'u', 'j', 'h', 's', 'o', 'n', 't', 'w', '+', '-', '=', '0'].includes(k)) || (e.ctrlKey && e.shiftKey && ['i', 'c', 'j'].includes(k))) e.preventDefault();
+});
+addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+
+// Pearl's own little message at the bottom (instead of browser alert/confirm boxes),
+// with an optional button like Undo.
+window.PearlToast = (text, actionLabel, onAction) => {
+  document.querySelector('.toast')?.remove();
+  const t = document.createElement('div');
+  t.className = 'toast'; t.setAttribute('role', 'status');
+  t.innerHTML = '<span></span>';
+  t.querySelector('span').textContent = text;
+  if (actionLabel) {
+    const b = document.createElement('button');
+    b.textContent = actionLabel;
+    b.onclick = () => { t.remove(); onAction && onAction(); };
+    t.append(b);
+  }
+  document.body.append(t);
+  setTimeout(() => t.classList.add('out'), 5000);
+  setTimeout(() => t.remove(), 5400);
+};
+
 /* ---------------- colors ---------------- */
 const PRESETS = {
   lagoon:    { name: 'Lagoon',    c: ['#7B5CFF', '#FF5FA2', '#14B996', '#FF9E1B'] },
@@ -188,7 +219,7 @@ function applyMascot() {
 document.getElementById('mascot-file').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
   const r = new FileReader();
-  r.onload = () => { try { localStorage.setItem(MKEY, r.result); } catch { alert('That image is too big. Try one under 2 MB.'); } applyMascot(); };
+  r.onload = () => { try { localStorage.setItem(MKEY, r.result); } catch { PearlToast('That image is too big. Try one under 2 MB.'); } applyMascot(); };
   r.readAsDataURL(f);
 });
 document.getElementById('mascot-reset').addEventListener('click', () => { localStorage.removeItem(MKEY); applyMascot(); });

@@ -114,7 +114,7 @@
     const { pts, lucky } = window.PearlPoints ? PearlPoints.roll() : { pts: 10, lucky: false };
     if (!st.test) {
       window.PearlPoints?.add(pts);
-      if (st.routineId) PearlDaily.markDone(st.routineId);
+      if (st.routineId) PearlDaily.markDone(st.routineId, pts);
     }
     say(lucky ? 'lucky' : 'done', 'happy', { pts });
     st.active = false;

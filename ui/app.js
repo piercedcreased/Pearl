@@ -82,7 +82,21 @@ const inkOn = (h, bg) => { if (lum(bg) > .4) return inkOf(h); let c = h; for (le
 // By clock: light from 6 AM to 6 PM, dark the rest
 const isDark = () => look.theme === 'dark' || (look.theme === 'auto' && (h => h < 6 || h >= 18)(new Date().getHours()));
 
-function applyLook() {
+// Dragging a color picker fires "input" dozens of times a second. Repaint at most once a frame,
+// and save (which also repaints every other Pearl window) only once you stop for a moment.
+let frame = 0, saveT = 0;
+const saveLook = () => { clearTimeout(saveT); saveT = 0; localStorage.setItem(KEY, JSON.stringify(look)); };
+function applyLook(o = {}) {
+  if (o.soon) { if (!frame) frame = requestAnimationFrame(() => { frame = 0; paint(); }); }
+  else { cancelAnimationFrame(frame); frame = 0; paint(); }
+  if (o.remote) return;
+  if (o.soon) { clearTimeout(saveT); saveT = setTimeout(saveLook, 400); } else saveLook();
+}
+addEventListener('pagehide', () => { if (saveT) saveLook(); });
+const soon = { soon: true };
+let painted = { w: '#ffffff', page: '' };
+
+function paint() {
   const s = document.documentElement.style, [a1, a2, a3] = look.colors, dark = isDark();
   // window color: cards, rows, pop-ups. Text on it flips light or dark to stay readable.
   const w = look.win || (dark ? mix('#18152A', a1, .1) : '#ffffff');
@@ -125,14 +139,15 @@ function applyLook() {
   const f = FONTS[look.font];
   s.setProperty('--display', f.display);
   s.setProperty('--body', f.body);
-  localStorage.setItem(KEY, JSON.stringify(look));
+  painted = { w, page };
   renderColorSettings();
 }
 
 function renderColorSettings() {
   const presets = document.getElementById('presets'), pickers = document.getElementById('pickers');
-  presets.innerHTML = Object.entries(PRESETS).map(([id, p]) =>
-    `<button class="preset${look.preset === id ? ' on' : ''}" data-preset="${id}"><span class="dots">${p.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${p.name}</button>`).join('');
+  if (!presets.children.length) presets.innerHTML = Object.entries(PRESETS).map(([id, p]) =>
+    `<button class="preset" data-preset="${id}"><span class="dots">${p.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${p.name}</button>`).join('');
+  presets.querySelectorAll('[data-preset]').forEach(b => b.classList.toggle('on', b.dataset.preset === look.preset));
   if (!pickers.children.length) {
     pickers.innerHTML = ROLES.map(([n, d], i) =>
       `<label class="picker"><input type="color" data-i="${i}"><span><b>${n}</b><small>${d}</small></span><span class="hex"></span></label>`).join('');
@@ -153,7 +168,7 @@ function renderColorSettings() {
   }
   document.getElementById('bg-angle').value = bg.angle;
   document.querySelectorAll('#theme button').forEach(b => b.classList.toggle('on', b.dataset.theme === look.theme));
-  const winInp = document.getElementById('win-color'), cur = getComputedStyle(document.documentElement).getPropertyValue('--w').trim();
+  const winInp = document.getElementById('win-color'), cur = painted.w;
   if (document.activeElement !== winInp) winInp.value = /^#[0-9a-f]{6}$/i.test(cur) ? cur : '#ffffff';
   winInp.closest('.picker').querySelector('.hex').textContent = look.win ? look.win.toUpperCase() : 'Auto';
   document.getElementById('win-auto').hidden = !look.win;
@@ -166,9 +181,11 @@ function renderColorSettings() {
     inp.closest('.picker').querySelector('.hex').textContent = c.toUpperCase();
   });
   document.querySelector('label[data-bg-for="pearl"] small').textContent = own ? 'How strong the pearl colors are' : 'How much your colors tint the pearl mix';
-  document.getElementById('fonts').innerHTML = Object.entries(FONTS).map(([id, f]) =>
-    `<button class="font-opt${look.font === id ? ' on' : ''}" data-font="${id}" style="--fd:${f.display.replace(/"/g, '')};--fb:${f.body.replace(/"/g, '')}"><span class="aa">Aa</span><b>${f.name}</b></button>`).join('');
-  document.getElementById('bg-preview').style.background = getComputedStyle(document.documentElement).getPropertyValue('--page-bg');
+  const fonts = document.getElementById('fonts');
+  if (!fonts.children.length) fonts.innerHTML = Object.entries(FONTS).map(([id, f]) =>
+    `<button class="font-opt" data-font="${id}" style="--fd:${f.display.replace(/"/g, '')};--fb:${f.body.replace(/"/g, '')}"><span class="aa">Aa</span><b>${f.name}</b></button>`).join('');
+  fonts.querySelectorAll('[data-font]').forEach(b => b.classList.toggle('on', b.dataset.font === look.font));
+  document.getElementById('bg-preview').style.background = painted.page;
 }
 
 document.addEventListener('click', e => {
@@ -178,19 +195,19 @@ document.addEventListener('click', e => {
   if (f) { look.font = f.dataset.font; applyLook(); }
 });
 document.getElementById('pickers').addEventListener('input', e => {
-  look.colors[e.target.dataset.i] = e.target.value; look.preset = 'custom'; applyLook();
+  look.colors[e.target.dataset.i] = e.target.value; look.preset = 'custom'; applyLook(soon);
 });
-document.getElementById('glow').addEventListener('input', e => { look.glow = +e.target.value; applyLook(); });
+document.getElementById('glow').addEventListener('input', e => { look.glow = +e.target.value; applyLook(soon); });
 document.getElementById('reset-colors').addEventListener('click', () => { look = { ...fresh(), font: look.font, theme: look.theme }; applyLook(); });
 document.getElementById('bg-mode').addEventListener('click', e => {
   const b = e.target.closest('[data-mode]'); if (b) { look.bg.mode = b.dataset.mode; applyLook(); }
 });
-for (const k of ['solid', 'from', 'to']) document.getElementById('bg-' + k).addEventListener('input', e => { look.bg[k] = e.target.value; applyLook(); });
-document.getElementById('bg-angle').addEventListener('input', e => { look.bg.angle = +e.target.value; applyLook(); });
+for (const k of ['solid', 'from', 'to']) document.getElementById('bg-' + k).addEventListener('input', e => { look.bg[k] = e.target.value; applyLook(soon); });
+document.getElementById('bg-angle').addEventListener('input', e => { look.bg.angle = +e.target.value; applyLook(soon); });
 document.getElementById('theme').addEventListener('click', e => {
   const b = e.target.closest('[data-theme]'); if (b) { look.theme = b.dataset.theme; applyLook(); }
 });
-document.getElementById('win-color').addEventListener('input', e => { look.win = e.target.value; applyLook(); });
+document.getElementById('win-color').addEventListener('input', e => { look.win = e.target.value; applyLook(soon); });
 document.getElementById('win-auto').addEventListener('click', () => { look.win = null; applyLook(); });
 document.getElementById('pearl-own').addEventListener('click', () => {
   look.bg.pearl = look.bg.pearl ? null : [look.colors[0], look.colors[2], look.colors[1]];
@@ -199,14 +216,14 @@ document.getElementById('pearl-own').addEventListener('click', () => {
 });
 for (let i = 0; i < 3; i++) document.getElementById('bg-p' + (i + 1)).addEventListener('input', e => {
   look.bg.pearl = look.bg.pearl || [look.colors[0], look.colors[2], look.colors[1]];
-  look.bg.pearl[i] = e.target.value; applyLook();
+  look.bg.pearl[i] = e.target.value; applyLook(soon);
 });
 // By clock: switch at 6 AM / 6 PM even if Pearl stays open. Other windows pick up changes too.
 let wasDark = isDark();
 setInterval(() => { if (look.theme === 'auto' && isDark() !== wasDark) { wasDark = isDark(); applyLook(); } }, 30e3);
 addEventListener('storage', e => {
   if (e.key !== KEY || !e.newValue) return;
-  try { look = { ...look, ...JSON.parse(e.newValue) }; look.bg = { ...freshBg(), ...look.bg }; applyLook(); } catch {}
+  try { look = { ...look, ...JSON.parse(e.newValue) }; look.bg = { ...freshBg(), ...look.bg }; applyLook({ remote: true }); } catch {}
 });
 
 /* ---------------- mascot image ---------------- */

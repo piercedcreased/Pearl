@@ -1,6 +1,5 @@
-the reminders work for real now. turn them on in settings
-dismiss the lock and your mascot pops out the corner asking if youre doing it, and he gets mad if you ignore him
-snooze more than 3 times and it might lock your screen for 1 to 2 minutes. youve been warned
-pearl lives in your tray now, click the icon for a little window
-dark mode, by clock mode, window colors and your own pearl colors
-every day stuff gets saved
+no more fake example stuff. pearl starts empty and everything in it is yours
+to dos are real now. type gym by 5pm and it sets the time. delete anything with undo
+goals are real now. make your own, track them, delete them
+points get saved
+no more browser right click menu or browser popups, it acts like an actual app now

@@ -1,6 +1,6 @@
 [package]
 name = "pearl"
-version = "0.1.1"
+version = "0.1.2"
 description = "Pearl: a to-do and reminder app"
 edition = "2021"
 

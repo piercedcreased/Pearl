@@ -1,7 +1,7 @@
 {
   "name": "pearl",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Pearl: a to-do and reminder app that rewards you for getting things done",
   "scripts": {
     "tauri": "tauri",

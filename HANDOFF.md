@@ -7,7 +7,7 @@ Pearl is the owner's to-do and reminder app that pushes them to actually do thin
 ## Where things stand
 - **Partly real now.** Every-day routines are saved (localStorage `pearl.routines`) and the whole reminder flow runs for real: scheduler, warning, lock, mascot pop-ups, lockdowns, tray. To-do tasks, goals and the points total are still sample HTML that isn't saved.
 - **Installed on the owner's PC:** Pearl 0.1.0 (a local build) at `%LOCALAPPDATA%\Pearl`, with Desktop and Start menu shortcuts. Reinstalling over it: `Start-Process <installer> /S`.
-- **Released:** 0.1.1 is on GitHub (2026-11-25). The round 5 work below is committed but NOT released yet; the next release is 0.1.2 (`npm run release -- 0.1.2 "..."`).
+- **Released:** 0.1.2 is on GitHub (2026-11-25) with all of round 5. `npm run release` ignores an uncommitted `REQUEST-TEMPLATE.md` (the owner's notes, never uploaded).
 - **Never close the owner's running apps**, and check before restarting things. The owner games on this PC, so keep Pearl light.
 
 ## The owner's brief
@@ -128,10 +128,9 @@ The owner asked for everything from their request template plus the mascot behav
 
 ## Next up (in rough order)
 1. **Real data:** to-do tasks, goals and the points total saved (routines already are). Tasks with a time could feed the same reminder flow.
-2. Release 0.1.2 with round 5 so the owner's installed copy gets it.
-3. Upcoming and Done pages (empty states for now).
-4. What points are for. The owner's "not sure yet" list: a points leaderboard that can't be farmed by spam-checking, and a shared daily task list (how to confirm people really did them is the open problem).
-5. Android, plus settings sync.
+2. Upcoming and Done pages (empty states for now).
+3. What points are for. The owner's "not sure yet" list: a points leaderboard that can't be farmed by spam-checking, and a shared daily task list (how to confirm people really did them is the open problem).
+4. Android, plus settings sync.
 
 ## Files
 - `ui/`: the app's frontend.

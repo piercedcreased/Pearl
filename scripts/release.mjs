@@ -20,7 +20,8 @@ const out = cmd => execSync(cmd).toString().trim();
 const fail = msg => { console.error('\n' + msg); process.exit(1); };
 
 if (!/^\d+\.\d+\.\d+$/.test(version || '')) fail('Usage: npm run release -- <version like 0.2.0> "note one" "note two"');
-const dirty = out('git status --porcelain');
+// REQUEST-TEMPLATE.md is the owner's notes file: it isn't part of the app and never gets released.
+const dirty = out('git status --porcelain').split(/\r?\n/).filter(l => l && !l.endsWith('REQUEST-TEMPLATE.md')).join('\n');
 if (dirty) fail('Commit or stash your changes first:\n' + dirty);
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));

@@ -110,6 +110,7 @@ pub async fn popup_open(app: AppHandle, kind: String, query: String) -> Result<(
             let (p, z) = (m.position(), m.size());
             *BACKDROP.lock().unwrap() = snapshot(p.x, p.y, z.width as i32, z.height as i32);
         }
+        keyguard::on();
     }
     let win = b.build().map_err(|e| e.to_string())?;
     app_like(&win);
@@ -179,6 +180,7 @@ fn snapshot(_x: i32, _y: i32, _w: i32, _h: i32) -> Option<(u32, u32, Vec<u8>)> {
 pub fn popup_close(app: AppHandle, kind: String) {
     if kind == "lock" {
         HOLD.store(false, Ordering::SeqCst);
+        keyguard::off();
     }
     for w in popups_of(&app, &kind) {
         let _ = w.destroy();
@@ -311,4 +313,74 @@ pub fn toggle_tray_widget(app: &AppHandle, rect: Rect) {
     let _ = w.show();
     let _ = w.set_focus();
     let _ = w.emit_to("tray", "pearl-tray-open", ());
+}
+
+/// While a lock screen is up, the Windows key, Alt+Tab, Alt+Esc, Alt+F4, Alt+Space and
+/// Ctrl+Esc / Ctrl+Shift+Esc do nothing, so the lock can't just be stepped around.
+/// A low-level keyboard hook on its own thread, only installed while a lock is open (so it
+/// never slows typing or games otherwise). Ctrl+Alt+Del can't be blocked by any app, and the
+/// readme says so.
+#[cfg(windows)]
+mod keyguard {
+    use std::sync::atomic::{AtomicBool, AtomicU32, Ordering::SeqCst};
+    use windows_sys::Win32::System::LibraryLoader::GetModuleHandleW;
+    use windows_sys::Win32::System::Threading::GetCurrentThreadId;
+    use windows_sys::Win32::UI::Input::KeyboardAndMouse::*;
+    use windows_sys::Win32::UI::WindowsAndMessaging::*;
+
+    static WANT: AtomicBool = AtomicBool::new(false);
+    static RUNNING: AtomicBool = AtomicBool::new(false);
+    static THREAD: AtomicU32 = AtomicU32::new(0);
+
+    unsafe extern "system" fn hook(code: i32, w: usize, l: isize) -> isize {
+        unsafe {
+            if code == HC_ACTION as i32 {
+                let k = &*(l as *const KBDLLHOOKSTRUCT);
+                let vk = k.vkCode as u16;
+                let alt = k.flags & LLKHF_ALTDOWN != 0;
+                let ctrl = GetAsyncKeyState(VK_CONTROL as i32) < 0;
+                let block = vk == VK_LWIN
+                    || vk == VK_RWIN
+                    || (alt && matches!(vk, VK_TAB | VK_ESCAPE | VK_F4 | VK_SPACE))
+                    || (ctrl && vk == VK_ESCAPE);
+                if block {
+                    return 1;
+                }
+            }
+            CallNextHookEx(std::ptr::null_mut(), code, w, l)
+        }
+    }
+
+    pub fn on() {
+        WANT.store(true, SeqCst);
+        if RUNNING.swap(true, SeqCst) {
+            return;
+        }
+        std::thread::spawn(|| unsafe {
+            let h = SetWindowsHookExW(WH_KEYBOARD_LL, Some(hook), GetModuleHandleW(std::ptr::null()), 0);
+            THREAD.store(GetCurrentThreadId(), SeqCst);
+            let mut msg: MSG = std::mem::zeroed();
+            // the hook only works while this thread keeps pumping messages
+            while WANT.load(SeqCst) && GetMessageW(&mut msg, std::ptr::null_mut(), 0, 0) > 0 {}
+            if !h.is_null() {
+                UnhookWindowsHookEx(h);
+            }
+            THREAD.store(0, SeqCst);
+            RUNNING.store(false, SeqCst);
+        });
+    }
+
+    pub fn off() {
+        WANT.store(false, SeqCst);
+        let t = THREAD.load(SeqCst);
+        if t != 0 {
+            unsafe { PostThreadMessageW(t, WM_QUIT, 0, 0) };
+        }
+    }
+}
+
+#[cfg(not(windows))]
+mod keyguard {
+    pub fn on() {}
+    pub fn off() {}
 }

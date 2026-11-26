@@ -26,7 +26,7 @@ tauri-plugin-autostart = "2"
 
 # A tiny screen snapshot behind the lock screen, blurred in the page (popups.rs)
 [target.'cfg(windows)'.dependencies]
-windows-sys = { version = "0.61", features = ["Win32_Graphics_Gdi", "Win32_Foundation"] }
+windows-sys = { version = "0.61", features = ["Win32_Graphics_Gdi", "Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse", "Win32_System_LibraryLoader", "Win32_System_Threading"] }
 # Turning off the Edge right-click menu and browser keys on every Pearl window (popups.rs app_like)
 webview2-com = "0.39"
 windows-core = "0.62"

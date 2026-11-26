@@ -24,7 +24,7 @@ are you lazy as shit and cant remember shit and feel like you need some slop to 
 pearl doesnt let you swipe it away. when something is due it takes over your screen, and if you dismiss it anyway your mascot climbs out of the corner and keeps asking until you admit youre doing it because life needs more popups in 2026
 
 > [!WARNING]
-> **snooze too much and it locks you out.** if you snooze the same thing more than 3 times, every snooze after that has a random chance to lock your whole screen for 1 to 2 minutes. no dismiss button, no closing it, it just counts down. the more you snooze and ignore the mascot, the more likely it is and the longer it lasts. reminders are off until you turn them on in settings, pearl never touches your files or anything else, and ctrl+alt+del still works if you actually need out (windows doesnt let any app block that). more below
+> **snooze too much and it locks you out.** if you snooze the same thing more than 3 times, every snooze after that has a random chance to lock your whole screen for 1 to 2 minutes. no dismiss button, no closing it, the windows key, alt+tab and alt+f4 dont work, it just counts down. the more you snooze and ignore the mascot, the more likely it is and the longer it lasts. reminders are off until you turn them on in settings, pearl never touches your files or anything else, and ctrl+alt+del still works if you actually need out (windows doesnt let any app block that). more below
 
 <br>
 
@@ -56,6 +56,7 @@ pearl doesnt let you swipe it away. when something is due it takes over your scr
 
 this one is mean on purpose so here it is up front:
 
+- while any lock is up, the windows key, alt+tab, alt+f4 and ctrl+esc dont do anything, so you cant just step around it
 - snoozing is fine the first 3 times
 - after that, **every snooze has a random chance to lock your screen for 1 to 2 minutes**. no dismiss, no snooze, no closing it. you just sit there and think about the laundry
 - it starts around a 1 in 5 chance and goes up with every snooze, and ignoring the mascot makes it more likely too. more snoozes also make it last longer, up to 2 minutes

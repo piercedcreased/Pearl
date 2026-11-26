@@ -99,9 +99,10 @@ pub fn run() {
                     api.prevent_close();
                     let _ = _w.hide();
                 }
-                // no closing the lock during a lockdown (Alt+F4)
+                // Alt+F4 can't close the warning, the lock or the mascot. They only close
+                // through the flow (which destroys them), so a reminder can't be skipped.
                 (l, WindowEvent::CloseRequested { api, .. })
-                    if l.starts_with("lock-") && popups::HOLD.load(std::sync::atomic::Ordering::SeqCst) =>
+                    if l.starts_with("lock-") || l.starts_with("warn-") || l.starts_with("pop-") =>
                 {
                     api.prevent_close();
                 }

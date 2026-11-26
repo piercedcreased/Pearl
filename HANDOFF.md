@@ -137,6 +137,11 @@ The owner was angry that 0.1.2 shipped with made-up to-dos and goals that couldn
 - Tested in a clean test copy (`identifier app.pearl.reminders.test2`): fresh install is empty everywhere; tasks, every kind of goal, delete/undo, routine links and points all worked.
 - Readme images still show the old sample content (same look). Re-take them with made-up content in a test copy when convenient.
 
+## Round 7 (2026-11-25): the lock can't be stepped around
+- While a lock window is open (normal or lockdown), a low-level keyboard hook (`keyguard` in popups.rs) swallows the Windows keys, Alt+Tab, Alt+Esc, Alt+F4, Alt+Space and Ctrl+Esc / Ctrl+Shift+Esc. It's installed only while a lock is open (`popup_open` lock -> on, `popup_close` lock -> off), on its own message-pumping thread, so it never slows typing or games otherwise. Ctrl+Alt+Del can't be blocked by any app; the readme says it's the way out.
+- Alt+F4 can't close any warning, lock or mascot window (they close only through the flow, with `destroy`), so a reminder can't be skipped by closing it.
+- **Not tested with real key presses yet.** The test copy's lock wasn't up when test keys were sent (the owner clicked Start on it first). Never send synthetic keys to the owner's desktop unless a Pearl lock is confirmed on screen and focused: Alt+F4 goes to whatever is in front.
+
 ## Next up (in rough order)
 1. To-dos with a time could feed the reminder flow too (right now only Every day routines remind).
 2. Upcoming and Done pages (empty states for now).
